@@ -67,7 +67,8 @@ export class NuevoPaqueteComponent implements OnInit {
   paqueteForm!: FormGroup;
   productos: ProductosInterface[] = [];
   // private notyf = new Notyf();
-  private toastr: ToastrService;
+  // private toastr: ToastrService;
+  private toastr = inject(ToastrService);
   categoriasProductos: CategoriaProductoInterface[] = [];
   paqueteId: number | null = null;
 

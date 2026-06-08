@@ -7,6 +7,7 @@ import {
   Input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/services/auth/auth.service';
 import { CatalogosService } from '../../core/services/catalogos/catalogos.service';
 import { CatalogosInterface } from '../../core/models/catalogos.models';
 // import { Notyf } from 'notyf';
@@ -53,7 +54,11 @@ export class CatalogosComponent implements OnInit {
   nombreSeleccionado: string | null = null;
   nuevoCatalogo: Partial<CatalogosInterface> = {};
   nuevoForm!: FormGroup;
-  private toastr: ToastrService;
+  // private toastr: ToastrService;
+  private toastr = inject(ToastrService);
+  // EMPRESA:
+  private authService = inject(AuthService);
+  empresaId: number | null = null;
 
   displayedColumns: string[] = [
     'grupo',
@@ -72,6 +77,7 @@ export class CatalogosComponent implements OnInit {
   private fb = inject(FormBuilder);
 
   ngOnInit(): void {
+    this.empresaId = this.authService.getEmpresaId();
     this.nuevoForm = this.fb.group({
       grupo: ['', Validators.required],
       codigo: ['', Validators.required],
@@ -83,33 +89,58 @@ export class CatalogosComponent implements OnInit {
   }
 
   cargarCatalogo(): void {
+    let empresaId = this.empresaId!;
     if (!this.grupoSeleccionado) return;
-    this.catalogosService.getCatalogoByGrupo(this.grupoSeleccionado).subscribe({
-      next: (data) => (this.catalogos = data),
-      error: (err) => console.error(err),
-    });
-  }
-  searchCatalogoByNombre(): void {
-    if (!this.nombreSeleccionado) return;
+    // this.catalogosService.getCatalogoByGrupo(this.grupoSeleccionado).subscribe({
+    //   next: (data) => (this.catalogos = data),
+    //   error: (err) => console.error(err),
+    // });
     this.catalogosService
-      .getCatalogoByNombre(this.nombreSeleccionado)
+      .getCatalogoByGrupoByEmpresaId(this.grupoSeleccionado, empresaId)
       .subscribe({
         next: (data) => (this.catalogos = data),
         error: (err) => console.error(err),
       });
   }
+  searchCatalogoByNombre(): void {
+    let empresaId = this.empresaId!;
+    if (!this.nombreSeleccionado) return;
+    // this.catalogosService
+    //   .getCatalogoByNombre(this.nombreSeleccionado)
+    //   .subscribe({
+    //     next: (data) => (this.catalogos = data),
+    //     error: (err) => console.error(err),
+    //   });
+     this.catalogosService
+       .getCatalogoByNombreByEmpresaId(this.nombreSeleccionado, empresaId)
+       .subscribe({
+         next: (data) => (this.catalogos = data),
+         error: (err) => console.error(err),
+       });
+    
+  }
 
   searchCatalogos(): void {
-    this.catalogosService.getCatalogos().subscribe({
+    let empresaId = this.empresaId!;
+    // this.catalogosService.getCatalogos().subscribe({
+    //   next: (data) => (this.catalogos = data),
+    //   error: (err) => console.error(err),
+    // });
+    this.catalogosService.getCatalogosByEmpresaId(empresaId).subscribe({
       next: (data) => (this.catalogos = data),
       error: (err) => console.error(err),
     });
   }
   searchCatalogosActivo(): void {
-    this.catalogosService.getCatalogosActivos().subscribe({
-      next: (data) => (this.catalogos = data),
-      error: (err) => console.error(err),
-    });
+    let empresaId = this.empresaId!;
+    // this.catalogosService.getCatalogosActivos().subscribe({
+    //   next: (data) => (this.catalogos = data),
+    //   error: (err) => console.error(err),
+    // });
+     this.catalogosService.getCatalogosActivosByEmpresaId(empresaId).subscribe({
+       next: (data) => (this.catalogos = data),
+       error: (err) => console.error(err),
+     });
   }
 
   guardarCatalogo(): void {
@@ -118,7 +149,12 @@ export class CatalogosComponent implements OnInit {
       return;
     }
 
-    const data = this.nuevoForm.value;
+    // const data = this.nuevoForm.value;
+        // EMPRESA:
+    const data = {
+      ...this.nuevoForm.value,
+      empresa_id: this.authService.getEmpresaId(),
+    };
 
     this.catalogosService.createCatalogo(data).subscribe({
       next: () => {

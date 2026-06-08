@@ -13,7 +13,11 @@
         </mat-slide-toggle>
 
         <!-- Refresh -->
-        <button mat-stroked-button color="primary" (click)="getProductos()">
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="getProductosByEmpresaId()"
+        >
           <i-tabler name="refresh" class="icon-18 m-r-4"> </i-tabler>
 
           Refresh

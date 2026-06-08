@@ -66,13 +66,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
   styleUrls: ['./nuevo-producto.component.scss'],
 })
 export class NuevoProductoComponent {
-  // private modalService = inject(NgbModal);
   private productosService = inject(ProductosService);
   private catalogosService = inject(CatalogosService);
   private categoriaProductoService = inject(CategoriaProductoService);
-  // private notyf = new Notyf();
   private dialog = inject(MatDialog);
-  private toastr: ToastrService;
+  private toastr = inject(ToastrService);
 
   @Input() producto: ProductosInterface | null = null; // Producto recibido del padre
   @Input() isEditMode: boolean = false; // Modo edición o creación
@@ -104,6 +102,7 @@ export class NuevoProductoComponent {
   productoSeleccionado: ProductosInterface | null = null;
 
   ngOnInit(): void {
+    this.empresaId = this.authService.getEmpresaId();
     if (this.producto) {
       this.productoForm.patchValue({ ...this.producto }); // Actualiza el formulario con los valores del producto
     }
@@ -122,7 +121,6 @@ export class NuevoProductoComponent {
       ...this.productoForm.value,
       empresa_id: this.authService.getEmpresaId(),
     };
-
     if (this.isEditMode) {
       const id = formValue.id; // Extrae el ID del formulario
       this.productosService.updateProducto(id, formValue).subscribe({
@@ -140,7 +138,6 @@ export class NuevoProductoComponent {
           this.productoGuardado.emit(data);
           this.resetForm();
           this.closeModal();
-
           this.showSuccess('Registro almacenado correctamente');
         },
         error: (error) => console.error('Error al crear el producto', error),
@@ -156,7 +153,7 @@ export class NuevoProductoComponent {
     this.productoForm.markAsUntouched();
   }
   openModal(content: TemplateRef<any>) {
-    this.getCategoriaProducto();
+    this.getCategoriaProductoByEmpresaId();
     this.getTipoCostos();
     this.getEstadosProducto();
 
@@ -172,8 +169,9 @@ export class NuevoProductoComponent {
     this.dialog.closeAll();
   }
 
-  getCategoriaProducto(): void {
-    this.categoriaProductoService.getCategoriaProducto().subscribe({
+  getCategoriaProductoByEmpresaId(): void {
+    let id = this.empresaId!;
+    this.categoriaProductoService.getCategoriaProductoByEmpresaId(id).subscribe({
       next: (data) => {
         this.categoriasProductos = data;
       },
@@ -183,8 +181,12 @@ export class NuevoProductoComponent {
     });
   }
   getTipoCostos(): void {
+    let empresaId = this.empresaId!;
     this.catalogosService
-      .getCatalogoByGrupo(CATALOGOS.GRUPO_TIPO_COSTOS_PRODUCTOS)
+      .getCatalogoByGrupoByEmpresaId(
+        CATALOGOS.GRUPO_TIPO_COSTOS_PRODUCTOS,
+        empresaId
+      )
       .subscribe({
         next: (data) => {
           this.tipoCostos = data; // Asignamos los datos obtenidos
@@ -195,8 +197,12 @@ export class NuevoProductoComponent {
       });
   }
   getEstadosProducto(): void {
+    let empresaId = this.empresaId!;
     this.catalogosService
-      .getCatalogoByGrupo(CATALOGOS.GRUPO_ESTADOS_PRODUCTOS)
+      .getCatalogoByGrupoByEmpresaId(
+        CATALOGOS.GRUPO_ESTADOS_PRODUCTOS,
+        empresaId,
+      )
       .subscribe({
         next: (data) => {
           this.estadosProductos = data; // Asignamos los datos obtenidos

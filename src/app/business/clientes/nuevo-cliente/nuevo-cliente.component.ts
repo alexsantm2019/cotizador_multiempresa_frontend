@@ -60,7 +60,8 @@ export class NuevoClienteComponent {
   @Input() isEditMode: boolean = false;
   clienteGuardado = output<ClientesInterface>();
   clienteForm!: FormGroup;
-  private toastr: ToastrService;
+  // private toastr: ToastrService;
+  private toastr = inject(ToastrService);
 
   // EMPRESA:
   private authService = inject(AuthService);
@@ -137,9 +138,9 @@ export class NuevoClienteComponent {
       panelClass: 'custom-dialog-container',
     });
 
-    dialogRef.afterClosed().subscribe(() => {
-      console.log('Dialog cerrado');
-    });
+    // dialogRef.afterClosed().subscribe(() => {
+    //   console.log('Dialog cerrado');
+    // });
   }
   closeModal() {
     this.dialog.closeAll();

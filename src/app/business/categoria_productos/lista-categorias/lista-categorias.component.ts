@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TablerIconComponent } from 'angular-tabler-icons';
 
 // Servicio
+import { AuthService } from '../../../core/services/auth/auth.service';
 import { CategoriaProductoService } from '../../../core/services/categoria-producto/categoria-producto.service';
 import { CategoriaProductoInterface } from '../../../core/models/categoria-producto.models';
 
@@ -30,20 +31,34 @@ export class ListaCategoriasComponent implements OnInit {
     new EventEmitter<CategoriaProductoInterface>();
 
   private categoriaProductosService = inject(CategoriaProductoService);
-
   categoriaProductos: CategoriaProductoInterface[] = [];
-
   currentPage = 1;
   pageSize = 5;
-
   displayedColumns: string[] = ['categoria', 'acciones'];
 
+  // EMPRESA:
+  private authService = inject(AuthService);
+  empresaId: number | null = null;
+
   ngOnInit(): void {
-    this.getCategoriaProductos();
+    this.empresaId = this.authService.getEmpresaId();
+    this.getCategoriaProductoByEmpresaId();
   }
 
-  getCategoriaProductos(): void {
-    this.categoriaProductosService.getCategoriaProducto().subscribe({
+  // getCategoriaProductos(): void {
+  //   this.categoriaProductosService.getCategoriaProducto().subscribe({
+  //     next: (data) => {
+  //       this.categoriaProductos = data;
+  //     },
+  //     error: (error) => {
+  //       console.error('Error en la búsqueda de categorías:', error);
+  //     },
+  //   });
+  // }
+
+  getCategoriaProductoByEmpresaId(): void {
+    let id = this.empresaId!;
+    this.categoriaProductosService.getCategoriaProductoByEmpresaId(id ).subscribe({
       next: (data) => {
         this.categoriaProductos = data;
       },
@@ -78,7 +93,7 @@ export class ListaCategoriasComponent implements OnInit {
 
     this.categoriaProductosService.deleteCategoriaProducto(id).subscribe({
       next: () => {
-        this.getCategoriaProductos();
+        this.getCategoriaProductoByEmpresaId();
       },
       error: (error) => console.error('Error al eliminar:', error),
     });

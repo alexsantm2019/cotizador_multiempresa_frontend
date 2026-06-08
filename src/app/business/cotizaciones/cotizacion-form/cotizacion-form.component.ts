@@ -124,13 +124,6 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
   private authService = inject(AuthService);
   empresaId: number | null = null;
 
-  // constructor(
-  //   private fb: FormBuilder,
-  //   private cdr: ChangeDetectorRef,
-  // ) {
-  //   this.inicializarFormulario();
-  // }
-
   constructor(
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
@@ -147,27 +140,9 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
     this.isDialogInstance = !!dialogRef;
   }
 
-  // ngOnInit(): void {
-  //   this.cargarCatalogos();
-  // }
-  // ngOnInit(): void {
-  //   this.cargarCatalogos();
-
-  //   // Si viene data desde dialog (edición)
-  //   if (this.data) {
-  //     this.isEditMode = this.data.isEditMode || false;
-  //     this.cotizacionExistente = this.data.cotizacionExistente || null;
-
-  //     if (this.cotizacionExistente) {
-  //       this.cargarCotizacion(this.cotizacionExistente);
-  //     }
-  //   }
-  // }
-
   ngOnInit(): void {
     this.empresaId = this.authService.getEmpresaId();
     this.cargarCatalogos();
-
     if (this.data) {
       this.isEditMode = this.data.isEditMode ?? false;
       this.cotizacionExistente = this.data.cotizacionExistente ?? null;
@@ -225,16 +200,21 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
   }
 
   getEstadosCotizacion(): void {
+    let empresaId = this.empresaId!;
     this.catalogosService
-      .getCatalogoByGrupo(CATALOGOS.GRUPO_ESTADOS_COTIZACIONES)
+      .getCatalogoByGrupoByEmpresaId(
+        CATALOGOS.GRUPO_ESTADOS_COTIZACIONES,
+        empresaId,
+      )
       .subscribe({
         next: (data) => (this.estadosCotizacion = data),
       });
   }
 
   getTipoEventos(): void {
+    let empresaId = this.empresaId!;
     this.catalogosService
-      .getCatalogoByGrupo(CATALOGOS.GRUPO_TIPO_EVENTOS)
+      .getCatalogoByGrupoByEmpresaId(CATALOGOS.GRUPO_TIPO_EVENTOS, empresaId)
       .subscribe({
         next: (data) => (this.tiposEvento = data),
       });
@@ -267,12 +247,9 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
   // ==========================================
   parsearFecha(fecha: any): string {
     if (!fecha) return '';
-
     try {
       const fechaObj = new Date(fecha);
-
       if (isNaN(fechaObj.getTime())) return '';
-
       return fechaObj.toISOString().split('T')[0];
     } catch {
       return '';
@@ -353,7 +330,8 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
   }
 
   getPaquetes(): void {
-    this.paquetesService.getPaquetes().subscribe({
+    let id = this.empresaId!;
+    this.paquetesService.getPaquetesByEmpresaId(id).subscribe({
       next: (data) => {
         this.paquetes = data.sort((a, b) =>
           a.nombre_paquete.localeCompare(b.nombre_paquete),
@@ -448,15 +426,10 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
   // ==========================================
   actualizarTotal(index: number): void {
     const item = this.itemsCotizacion[index];
-
     if (!item) return;
-
     item.cantidad = Math.max(1, Number(item.cantidad) || 1);
-
     item.descuento = Math.max(0, Number(item.descuento) || 0);
-
     const subtotal = item.cantidad * item.precio_unitario;
-
     item.total = Math.max(0, subtotal - item.descuento);
   }
 
@@ -486,13 +459,9 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
 
   calcularTotal(): number {
     const subtotal = Number(this.calcularSubtotal()) || 0;
-
     const porcentajeIva = Number(this.cotizacionForm.get('iva')?.value) || 0;
-
     const iva = subtotal * (porcentajeIva / 100);
-
     const total = subtotal + iva;
-
     return Number(total.toFixed(2));
   }
 
@@ -504,27 +473,23 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
       this.marcarCamposComoSucios();
       return;
     }
-
     this.isSaving = true;
-
     const formValue = this.cotizacionForm.value;
+    const empresaId = this.authService.getEmpresaId();
 
     const cotizacion = {
       id: this.cotizacionExistente?.id,
-
       cliente: Number(formValue.cliente),
       iva: formValue.iva,
       estado: formValue.estado,
-
       subtotal: this.calcularSubtotal(),
       total: this.calcularTotal(),
-
       fecha_vigencia: formValue.fechaValidez,
       fecha_evento: formValue.fechaEvento,
       nombre_evento: formValue.nombreCotizacion,
       tipo_evento: formValue.tipoEvento,
       duracion_evento: formValue.duracionEvento,
-      empresa_id: 1,
+      empresa_id: empresaId,
 
       detalles: this.itemsCotizacion.map((item) => ({
         cantidad: item.cantidad,

@@ -47,7 +47,8 @@ export class InventarioComponent implements OnInit {
     'actualizado',
     'usuario',
   ];
-  private toastr: ToastrService;
+  // private toastr: ToastrService;
+  private toastr = inject(ToastrService);
   // productosInventario: ProductosInterface[] = [];
   productosInventario = signal<ProductosInterface[]>([]);
   currentPage = 1;

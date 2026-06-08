@@ -46,7 +46,7 @@ export class CategoriaParentComponent implements OnInit {
   actualizarLista(): void {
     this.isEditMode = false;
     if (this.listaCategorias) {
-      this.listaCategorias.getCategoriaProductos(); // Llama al método en lista-cotizaciones
+      this.listaCategorias.getCategoriaProductoByEmpresaId(); // Llama al método en lista-cotizaciones
     }
   }
 }

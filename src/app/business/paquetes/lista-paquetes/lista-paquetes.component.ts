@@ -51,7 +51,8 @@ import { PaqueteSearchComponent } from '../paquete-search/paquete-search.compone
 export class ListaPaquetesComponent implements OnInit {
   constructor(private router: Router) {}
 
-  private toastr: ToastrService;
+  // private toastr: ToastrService;
+  private toastr = inject(ToastrService);
   private paquetesService = inject(PaquetesService);
 
   paquetes = signal<PaqueteInterface[]>([]);

@@ -65,15 +65,14 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 })
 export class ListaProductosComponent implements OnInit {
   private productosService = inject(ProductosService);
-
-  // productos: ProductosInterface[] = [];
   productos = signal<ProductosInterface[]>([]);
   currentPage = 1;
   pageSize = 20;
   isEditMode: boolean = false;
   productoSeleccionado: ProductosInterface | null = null;
   mostrarDescripcion: boolean = false;
-  private toastr: ToastrService;
+  // private toastr: ToastrService;
+  private toastr = inject(ToastrService);
 
   // EMPRESA:
   private authService = inject(AuthService);
@@ -120,17 +119,17 @@ export class ListaProductosComponent implements OnInit {
     this.itemsPerPage = event.pageSize;
   }
 
-  getProductos(): void {
-    this.productosService.getProductos().subscribe({
-      next: (data) => {
-        // this.productos = data;
-        this.productos.set(data);
-      },
-      error: (error) => {
-        console.error('Error en la búsqueda de productos:', error);
-      },
-    });
-  }
+  // getProductos(): void {
+  //   this.productosService.getProductos().subscribe({
+  //     next: (data) => {
+  //       // this.productos = data;
+  //       this.productos.set(data);
+  //     },
+  //     error: (error) => {
+  //       console.error('Error en la búsqueda de productos:', error);
+  //     },
+  //   });
+  // }
 
   getProductosByEmpresaId(): void {
     let id = this.empresaId!;

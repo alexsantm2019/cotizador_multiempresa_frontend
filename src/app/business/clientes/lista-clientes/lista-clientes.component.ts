@@ -66,7 +66,8 @@ export class ListaClientesComponent implements OnInit {
   }
 
   private clientesService = inject(ClientesService);
-  private toastr: ToastrService;
+  // private toastr: ToastrService;
+  private toastr = inject(ToastrService);
 
   clientes = signal<ClientesInterface[]>([]);
   currentPage = 1;
