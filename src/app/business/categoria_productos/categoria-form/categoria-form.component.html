@@ -1,0 +1,49 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <h4 class="f-s-20 f-w-600 m-b-24">
+      {{ isEditMode ? "Editar categoría" : "Nueva categoría" }}
+    </h4>
+
+    <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()">
+      <!-- Categoría -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Categoría *</mat-label>
+
+        <input matInput formControlName="categoria" />
+
+        @if (
+          categoriaForm.get("categoria")?.touched &&
+          categoriaForm.get("categoria")?.invalid
+        ) {
+          <mat-error> Nombre es obligatorio </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Botones -->
+      <div class="d-flex justify-content-end gap-8 m-t-24">
+        @if (isEditMode) {
+          <button mat-stroked-button type="button" (click)="changeEditMode()">
+            <i-tabler name="plus" class="icon-18 m-r-4"> </i-tabler>
+
+            Nuevo
+          </button>
+        }
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="categoriaForm.invalid"
+        >
+          <i-tabler
+            [name]="isEditMode ? 'device-floppy' : 'plus'"
+            class="icon-18 m-r-4"
+          >
+          </i-tabler>
+
+          {{ isEditMode ? "Actualizar" : "Agregar" }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

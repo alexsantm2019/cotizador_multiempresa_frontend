@@ -1,0 +1,157 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <!-- Header -->
+    <div class="row m-b-16 align-items-center">
+      <div class="col-md-5">
+        <app-inventario-search (searchChange)="onSearch($event)">
+        </app-inventario-search>
+      </div>
+
+      <div class="col-md-7 d-flex justify-content-end flex-wrap gap-8">
+        <div class="bg-light-warning text-warning rounded p-x-16 p-y-8 f-w-600">
+          Por terminar (1 -
+          {{ minimoProductosInventario }})
+        </div>
+
+        <div class="bg-light-error text-error rounded p-x-16 p-y-8 f-w-600">
+          Sin stock / agotado
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-responsive">
+      <table mat-table [dataSource]="getPagedInventario()" class="w-100">
+        <!-- Producto -->
+        <ng-container matColumnDef="producto">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600">Producto</th>
+
+          <td
+            mat-cell
+            *matCellDef="let producto"
+            [ngClass]="{
+              'bg-light-error': !producto.cantidad || producto.cantidad === 0,
+              'bg-light-warning':
+                producto.cantidad > 0 &&
+                producto.cantidad <= minimoProductosInventario,
+            }"
+          >
+            <div class="d-flex align-items-center">
+              <div
+                class="icon-40 bg-light-primary rounded-circle d-flex align-items-center justify-content-center"
+              >
+                <i-tabler name="package" class="icon-20 text-primary">
+                </i-tabler>
+              </div>
+
+              <div class="m-l-16">
+                <h6 class="m-0 f-s-14 f-w-600">
+                  {{ producto.producto }}
+                </h6>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Descripción -->
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600">Descripción</th>
+
+          <td mat-cell *matCellDef="let producto">
+            {{ producto.descripcion }}
+          </td>
+        </ng-container>
+
+        <!-- Tipo costo -->
+        <ng-container matColumnDef="tipoCosto">
+          <th mat-header-cell *matHeaderCellDef class="text-center f-w-600">
+            Tipo de costo
+          </th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center">
+            {{ producto.tipo_costo_info?.item }}
+          </td>
+        </ng-container>
+
+        <!-- Cantidad -->
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="text-center f-w-600">
+            Cantidad
+          </th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center">
+            <div class="d-flex align-items-center gap-8">
+              <mat-form-field appearance="outline" class="m-b-0">
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  [(ngModel)]="producto.cantidad"
+                />
+              </mat-form-field>
+
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="actualizarCantidad(producto)"
+              >
+                <i-tabler name="refresh" class="icon-18"> </i-tabler>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Actualizado -->
+        <ng-container matColumnDef="actualizado">
+          <th mat-header-cell *matHeaderCellDef class="text-center f-w-600">
+            Actualizado en
+          </th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center">
+            {{ producto.inventario_updated_at | date: "yyyy-MM-dd HH:mm:ss" }}
+          </td>
+        </ng-container>
+
+        <!-- Usuario -->
+        <ng-container matColumnDef="usuario">
+          <th mat-header-cell *matHeaderCellDef class="text-center f-w-600">
+            Registrado por
+          </th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center text-body">
+            {{ producto.user }}
+          </td>
+        </ng-container>
+
+        <!-- Header -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <!-- Rows -->
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [ngClass]="{
+            'bg-light-error': !row.cantidad || row.cantidad === 0,
+            'bg-light-warning':
+              row.cantidad > 0 && row.cantidad <= minimoProductosInventario,
+          }"
+        ></tr>
+      </table>
+
+      @if (getPagedInventario().length === 0) {
+        <div class="text-center p-y-32">No hay productos disponibles</div>
+      }
+    </div>
+
+    <!-- paginator -->
+    <mat-paginator
+      [length]="filteredInventario().length"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage - 1"
+      [pageSizeOptions]="[5, 10, 20, 50]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>

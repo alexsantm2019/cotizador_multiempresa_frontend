@@ -1,0 +1,414 @@
+<!-- BOTÓN -->
+<!-- BOTÓN -->
+<button
+  *ngIf="!isDialogInstance"
+  mat-flat-button
+  [color]="isEditMode ? 'accent' : 'primary'"
+  (click)="openModal()"
+>
+  <mat-icon>
+    {{ isEditMode ? "edit" : "add" }}
+  </mat-icon>
+
+  {{ isEditMode ? "Editar" : "Nueva cotización" }}
+</button>
+
+<div class="dialog-container" *ngIf="isDialogInstance">
+  <!-- HEADER -->
+  <div class="dialog-header">
+    <div>
+      <h2 class="dialog-title">
+        {{ isEditMode ? "Editar Cotización" : "Nueva Cotización" }}
+      </h2>
+
+      <span class="dialog-subtitle">
+        Complete la información de la cotización
+      </span>
+    </div>
+
+    <button mat-icon-button (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- BODY -->
+  <mat-dialog-content>
+    <form [formGroup]="cotizacionForm">
+      <!-- ===================================== -->
+      <!-- INFORMACIÓN GENERAL -->
+      <!-- ===================================== -->
+
+      <mat-card class="section-card">
+        <mat-card-header>
+          <div mat-card-avatar class="card-icon">
+            <mat-icon>description</mat-icon>
+          </div>
+
+          <mat-card-title> Información General </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="row g-3">
+            <!-- Nombre -->
+            <div class="col-lg-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Nombre de Cotización</mat-label>
+
+                <input
+                  matInput
+                  formControlName="nombreCotizacion"
+                  maxlength="100"
+                  placeholder="Ej: Boda de María y Juan"
+                />
+
+                <mat-icon matSuffix>edit_note</mat-icon>
+
+                <mat-error
+                  *ngIf="
+                    cotizacionForm.get('nombreCotizacion')?.hasError('required')
+                  "
+                >
+                  Campo requerido
+                </mat-error>
+
+                <mat-error
+                  *ngIf="
+                    cotizacionForm
+                      .get('nombreCotizacion')
+                      ?.hasError('minlength')
+                  "
+                >
+                  Mínimo 3 caracteres
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Cliente -->
+            <div class="col-lg-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Cliente</mat-label>
+
+                <mat-select formControlName="cliente">
+                  <mat-option [value]="null">
+                    Seleccione un cliente
+                  </mat-option>
+
+                  <mat-option *ngFor="let c of clientes" [value]="c.id">
+                    {{ c.nombre }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-icon matSuffix>person</mat-icon>
+
+                <mat-error> Cliente requerido </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Tipo Evento -->
+            <div class="col-lg-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Tipo Evento</mat-label>
+
+                <mat-select formControlName="tipoEvento">
+                  <mat-option value=""> Seleccione </mat-option>
+
+                  <mat-option
+                    *ngFor="let tipo of tiposEvento"
+                    [value]="tipo.codigo"
+                  >
+                    {{ tipo.item }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-icon matSuffix>celebration</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- Duración -->
+            <div class="col-lg-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Duración</mat-label>
+
+                <input
+                  matInput
+                  type="number"
+                  min="1"
+                  formControlName="duracionEvento"
+                />
+
+                <span matTextSuffix>Horas</span>
+
+                <mat-icon matSuffix>schedule</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- Estado -->
+            <div class="col-lg-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Estado</mat-label>
+
+                <mat-select formControlName="estado">
+                  <mat-option [value]="null"> Seleccione </mat-option>
+
+                  <mat-option
+                    *ngFor="let estado of estadosCotizacion"
+                    [value]="estado.codigo"
+                  >
+                    {{ estado.item }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-icon matSuffix>flag</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- ===================================== -->
+      <!-- FECHAS -->
+      <!-- ===================================== -->
+
+      <mat-card class="section-card">
+        <mat-card-header>
+          <div mat-card-avatar class="card-icon">
+            <mat-icon>calendar_month</mat-icon>
+          </div>
+
+          <mat-card-title> Fechas </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="row g-3">
+            <div class="col-lg-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Fecha del Evento</mat-label>
+
+                <input
+                  matInput
+                  type="date"
+                  formControlName="fechaEvento"
+                  [min]="getFechaMinima()"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="col-lg-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Fecha de Vigencia</mat-label>
+
+                <input
+                  matInput
+                  type="date"
+                  formControlName="fechaValidez"
+                  [min]="getFechaMinima()"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- ===================================== -->
+      <!-- PRODUCTOS / PAQUETES -->
+      <!-- ===================================== -->
+
+      <mat-card class="section-card">
+        <mat-card-header>
+          <div mat-card-avatar class="card-icon">
+            <mat-icon>inventory_2</mat-icon>
+          </div>
+
+          <mat-card-title> Agregar Productos / Paquetes </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="row g-3">
+            <!-- Producto -->
+            <div class="col-lg-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Producto</mat-label>
+
+                <mat-select
+                  formControlName="producto"
+                  (selectionChange)="agregarProducto()"
+                >
+                  <mat-option [value]="null">
+                    Seleccione un producto
+                  </mat-option>
+
+                  <mat-option
+                    *ngFor="let p of productos"
+                    [value]="p"
+                    [disabled]="p.tipo_costo === 1 && p.cantidad <= 5"
+                  >
+                    {{ p.producto }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Paquete -->
+            <div class="col-lg-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Paquete</mat-label>
+
+                <mat-select
+                  formControlName="paquete"
+                  (selectionChange)="agregarPaquete()"
+                >
+                  <mat-option [value]="null">
+                    Seleccione un paquete
+                  </mat-option>
+
+                  <mat-option *ngFor="let pqt of paquetes" [value]="pqt">
+                    {{ pqt.nombre_paquete }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- ===================================== -->
+      <!-- ITEMS -->
+      <!-- ===================================== -->
+
+      <mat-card class="section-card" *ngIf="itemsCotizacion.length > 0">
+        <mat-card-header>
+          <mat-card-title> Resumen de Cotización </mat-card-title>
+
+          <span class="item-badge"> {{ itemsCotizacion.length }} item(s) </span>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="table-wrapper">
+            <table
+              mat-table
+              [dataSource]="itemsCotizacion"
+              class="w-100 app-table"
+            >
+              <!-- Nombre -->
+              <ng-container matColumnDef="nombre">
+                <th mat-header-cell *matHeaderCellDef>Nombre</th>
+
+                <td mat-cell *matCellDef="let item">
+                  {{ item.nombre }}
+                </td>
+              </ng-container>
+
+              <!-- Cantidad -->
+              <ng-container matColumnDef="cantidad">
+                <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+
+                <td mat-cell *matCellDef="let item; let i = index">
+                  <input
+                    *ngIf="!item.disable"
+                    matInput
+                    type="number"
+                    min="1"
+                    [(ngModel)]="item.cantidad"
+                    (input)="actualizarTotal(i)"
+                    [ngModelOptions]="{ standalone: true }"
+                  />
+                </td>
+              </ng-container>
+
+              <!-- Precio -->
+              <ng-container matColumnDef="precio">
+                <th mat-header-cell *matHeaderCellDef>Precio</th>
+
+                <td mat-cell *matCellDef="let item">
+                  {{ item.precio_unitario | currency }}
+                </td>
+              </ng-container>
+
+              <!-- Total -->
+              <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef>Total</th>
+
+                <td mat-cell *matCellDef="let item">
+                  <strong class="price-text">
+                    {{ item.total | currency }}
+                  </strong>
+                </td>
+              </ng-container>
+
+              <!-- Delete -->
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef></th>
+
+                <td mat-cell *matCellDef="let item; let i = index">
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="eliminarItem(i)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr
+                mat-header-row
+                *matHeaderRowDef="[
+                  'nombre',
+                  'cantidad',
+                  'precio',
+                  'total',
+                  'acciones',
+                ]"
+              ></tr>
+
+              <tr
+                mat-row
+                *matRowDef="
+                  let row;
+                  columns: ['nombre', 'cantidad', 'precio', 'total', 'acciones']
+                "
+              ></tr>
+            </table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- IVA -->
+      <mat-card class="section-card">
+        <mat-card-content>
+          <label class="fw-semibold mb-3 d-block"> IVA </label>
+
+          <mat-radio-group formControlName="iva">
+            <mat-radio-button
+              *ngFor="let option of ivaOptions"
+              [value]="option.value"
+              class="me-4"
+            >
+              {{ option.label }}
+            </mat-radio-button>
+          </mat-radio-group>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </mat-dialog-content>
+
+  <mat-divider></mat-divider>
+
+  <!-- FOOTER -->
+  <mat-dialog-actions align="end" class="dialog-footer">
+    <button mat-stroked-button (click)="closeModal()">Cancelar</button>
+
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="guardarCotizacion()"
+      [disabled]="cotizacionForm.invalid || isSaving"
+    >
+      <mat-icon>save</mat-icon>
+
+      {{ isEditMode ? "Actualizar" : "Guardar" }}
+    </button>
+  </mat-dialog-actions>
+</div>

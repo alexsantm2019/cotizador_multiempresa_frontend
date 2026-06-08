@@ -1,0 +1,21 @@
+.fixed-sidebar {
+    position: fixed;
+    top: 20;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    /* Asegura que esté por encima de otros elementos */
+    background: white;
+    /* Fondo para que el contenido no se vea detrás */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: solid 2px red;
+    /* Opcional: sombra para mejor apariencia */
+}
+
+
+/* Ajusta el padding del contenido principal para que no quede detrás */
+
+.main-content {
+    padding-top: 80px;
+    /* Ajusta según la altura de tu sidebar */
+}

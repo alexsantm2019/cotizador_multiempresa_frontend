@@ -1,0 +1,381 @@
+/* ==========================================================
+MODAL
+========================================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  background: rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ==========================================================
+MONTH HEADER
+========================================================== */
+
+.month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 14px 18px;
+  margin-bottom: 14px;
+
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  transition: all 0.25s ease;
+}
+
+.month-header:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 22px rgba(15, 23, 42, 0.08);
+}
+
+.month-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendar-icon {
+  color: #2563eb;
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+}
+
+.month-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.month-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.month-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.month-counter {
+  min-width: 36px;
+  height: 36px;
+
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg,
+      #2563eb,
+      #4f46e5);
+
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* ==========================================================
+TABLE CARD
+========================================================== */
+
+.table-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+
+  border: 1px solid #eef2f7;
+
+  box-shadow:
+    0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* ==========================================================
+TABLA GLOBAL (MUY COMPACTA)
+========================================================== */
+
+.app-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* HEADER */
+.app-table .mat-mdc-header-row {
+  height: 38px !important;
+  background: #f8fafc;
+}
+
+/* FILAS */
+.app-table .mat-mdc-row {
+  height: 40px !important;
+  transition: background 0.2s ease;
+}
+
+.app-table .mat-mdc-row:hover {
+  background: #f8fafc;
+}
+
+/* HEADER CELL */
+.app-table .mat-mdc-header-cell {
+  padding: 0 10px !important;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  color: #475569;
+
+  white-space: nowrap;
+}
+
+/* CELL */
+.app-table .mat-mdc-cell {
+  padding: 0 10px !important;
+
+  font-size: 12.5px;
+  line-height: 1.15;
+
+  vertical-align: middle;
+
+  border-bottom: 1px solid #edf2f7;
+}
+
+/* QUITAR ESPACIOS EXTRAS MDC */
+.mat-mdc-table tbody,
+.mat-mdc-table tfoot,
+.mat-mdc-table thead,
+.mat-mdc-cell,
+.mat-mdc-header-cell,
+.mat-mdc-row,
+.mat-mdc-header-row {
+  min-height: unset !important;
+}
+
+/* ==========================================================
+FILA PRINCIPAL
+========================================================== */
+
+.main-row {
+  height: 40px !important;
+}
+
+/* ==========================================================
+PRECIO
+========================================================== */
+
+.price-text {
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #16a34a;
+}
+
+/* ==========================================================
+ESTADO CHIP
+========================================================== */
+
+.estado-chip {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ==========================================================
+ACCIONES
+========================================================== */
+
+.actions-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.actions-group button {
+  width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
+}
+
+.actions-group mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+/* ==========================================================
+CHILD ROW
+========================================================== */
+
+.expanded-row {
+  background: #f8fafc;
+}
+
+.hidden-row {
+  display: none;
+}
+
+.detail-cell {
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
+.detail-wrapper {
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* ==========================================================
+CARDS CHILD
+========================================================== */
+
+.detail-card {
+  border-radius: 14px !important;
+
+  border: 1px solid #e5e7eb;
+
+  box-shadow: none !important;
+}
+
+/* HEADER CARD */
+.detail-card .mat-mdc-card-header {
+  padding: 10px 14px 6px !important;
+  min-height: auto !important;
+}
+
+/* TITLE */
+.detail-card .mat-mdc-card-title {
+  font-size: 14px !important;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* CONTENT */
+.detail-card .mat-mdc-card-content {
+  padding: 0 12px 10px !important;
+}
+
+/* ==========================================================
+ICONO CHILD
+========================================================== */
+
+.detail-icon {
+  width: 34px !important;
+  height: 34px !important;
+
+  border-radius: 10px;
+
+  background: rgba(37, 99, 235, 0.12);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-icon mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ==========================================================
+TABLAS CHILD (ULTRA COMPACTAS)
+========================================================== */
+
+.compact-table .mat-mdc-header-row {
+  height: 34px !important;
+}
+
+.compact-table .mat-mdc-row {
+  height: 32px !important;
+}
+
+.compact-table .mat-mdc-header-cell {
+  padding: 0 8px !important;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.compact-table .mat-mdc-cell {
+  padding: 0 8px !important;
+
+  font-size: 11.5px;
+  line-height: 1.1;
+
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* ==========================================================
+DETALLES EVENTO
+========================================================== */
+
+.label-cell {
+  width: 34%;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.value-cell {
+  font-weight: 500;
+  color: #0f172a;
+}
+
+/* ==========================================================
+EMPTY STATE
+========================================================== */
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-state mat-icon {
+  font-size: 56px;
+  width: 56px;
+  height: 56px;
+  color: #94a3b8;
+}
+
+/* ==========================================================
+RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+  .month-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .month-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

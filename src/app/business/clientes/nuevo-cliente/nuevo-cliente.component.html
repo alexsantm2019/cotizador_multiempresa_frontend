@@ -1,0 +1,129 @@
+<button
+  mat-flat-button
+  color="primary"
+  [class.m-x-4]="isEditMode"
+  (click)="openDialog()"
+>
+  <i-tabler [name]="isEditMode ? 'edit' : 'plus'" class="icon-18 m-r-4">
+  </i-tabler>
+
+  @if (!isEditMode) {
+    Nuevo Cliente
+  }
+</button>
+
+<ng-template #content>
+  <div class="p-24">
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between m-b-24">
+      <h4 class="f-s-20 f-w-600 m-0">
+        {{ isEditMode ? "Editar Cliente" : "Nuevo Cliente" }}
+      </h4>
+
+      <button mat-icon-button (click)="closeModal()">
+        <i-tabler name="x" class="icon-20"></i-tabler>
+      </button>
+    </div>
+
+    <!-- Formulario -->
+    <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <!-- Cliente -->
+        <div class="col-lg-12">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Cliente *</mat-label>
+
+            <input matInput formControlName="nombre" />
+
+            @if (
+              clienteForm.get("nombre")?.touched &&
+              clienteForm.get("nombre")?.invalid
+            ) {
+              <mat-error> Nombre es obligatorio </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Identificación -->
+        <div class="col-lg-12">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Identificación</mat-label>
+
+            <input matInput formControlName="identificacion" />
+
+            @if (
+              clienteForm.get("identificacion")?.touched &&
+              clienteForm.get("identificacion")?.invalid
+            ) {
+              <mat-error> La identificación es obligatoria </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Correo -->
+        <div class="col-lg-12">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Correo</mat-label>
+
+            <input matInput type="email" formControlName="correo" />
+
+            @if (
+              clienteForm.get("correo")?.touched &&
+              clienteForm.get("correo")?.invalid
+            ) {
+              <mat-error> Correo es obligatorio </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="col-lg-12">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Teléfono</mat-label>
+
+            <input matInput formControlName="telefono" />
+
+            @if (
+              clienteForm.get("telefono")?.touched &&
+              clienteForm.get("telefono")?.invalid
+            ) {
+              <mat-error> Teléfono es obligatorio </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Dirección -->
+        <div class="col-lg-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Dirección</mat-label>
+
+            <input matInput formControlName="direccion" />
+
+            @if (
+              clienteForm.get("direccion")?.touched &&
+              clienteForm.get("direccion")?.invalid
+            ) {
+              <mat-error> Dirección es obligatoria </mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="d-flex justify-content-end gap-8 m-t-24">
+        <button mat-stroked-button type="button" (click)="closeModal()">
+          Cerrar
+        </button>
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="clienteForm.invalid"
+        >
+          {{ isEditMode ? "Actualizar" : "Guardar" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

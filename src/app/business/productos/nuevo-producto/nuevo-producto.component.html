@@ -1,0 +1,173 @@
+<button
+  mat-flat-button
+  color="primary"
+  [class.m-x-4]="isEditMode"
+  (click)="openModal(content)"
+>
+  <i-tabler [name]="isEditMode ? 'edit' : 'plus'" class="icon-18 m-r-4">
+  </i-tabler>
+
+  @if (!isEditMode) {
+    Nuevo Producto
+  }
+</button>
+
+<ng-template #content>
+  <div class="p-24">
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between m-b-24">
+      <h4 class="f-s-20 f-w-600 m-0">
+        {{ isEditMode ? "Editar Producto" : "Nuevo Producto" }}
+      </h4>
+
+      <button mat-icon-button (click)="closeModal()">
+        <i-tabler name="x" class="icon-20"></i-tabler>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="productoForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <!-- Producto -->
+        <div class="col-lg-12">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Producto *</mat-label>
+
+            <input matInput formControlName="producto" />
+
+            @if (
+              productoForm.get("producto")?.touched &&
+              productoForm.get("producto")?.invalid
+            ) {
+              <mat-error> El producto es obligatorio </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Descripción -->
+        <div class="col-lg-12">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Descripción</mat-label>
+
+            <input matInput formControlName="descripcion" />
+          </mat-form-field>
+        </div>
+
+        <!-- Tipo costo -->
+        <div class="col-lg-6">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Tipo de costo *</mat-label>
+
+            <mat-select formControlName="tipo_costo">
+              @for (tipoCosto of tipoCostos; track tipoCosto.codigo) {
+                <mat-option [value]="tipoCosto.codigo">
+                  {{ tipoCosto.item }}
+                </mat-option>
+              }
+            </mat-select>
+
+            @if (
+              productoForm.get("tipo_costo")?.touched &&
+              productoForm.get("tipo_costo")?.invalid
+            ) {
+              <mat-error> El tipo de costo es obligatorio </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Valor -->
+        <div class="col-lg-6">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Valor *</mat-label>
+
+            <input matInput type="number" formControlName="costo" />
+
+            @if (
+              productoForm.get("costo")?.touched &&
+              productoForm.get("costo")?.invalid
+            ) {
+              <mat-error>
+                @if (productoForm.get("costo")?.errors?.["required"]) {
+                  El costo es obligatorio
+                }
+
+                @if (productoForm.get("costo")?.errors?.["min"]) {
+                  El costo debe ser mayor a 0
+                }
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Ubicación -->
+        <div class="col-lg-12">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Ubicación</mat-label>
+
+            <input matInput formControlName="ubicacion" />
+          </mat-form-field>
+        </div>
+
+        <!-- Categoría -->
+        <div class="col-lg-6">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Categoría *</mat-label>
+
+            <mat-select formControlName="categoria_producto_id">
+              @for (categoria of categoriasProductos; track categoria.id) {
+                <mat-option [value]="categoria.id">
+                  {{ categoria.categoria }}
+                </mat-option>
+              }
+            </mat-select>
+
+            @if (
+              productoForm.get("categoria_producto_id")?.touched &&
+              productoForm.get("categoria_producto_id")?.invalid
+            ) {
+              <mat-error> Categoría obligatoria </mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Estado -->
+        <div class="col-lg-6">
+          <mat-form-field appearance="outline" class="w-100 m-b-16">
+            <mat-label>Estado *</mat-label>
+
+            <mat-select formControlName="estado">
+              @for (estado of estadosProductos; track estado.codigo) {
+                <mat-option [value]="estado.codigo">
+                  {{ estado.item }}
+                </mat-option>
+              }
+            </mat-select>
+
+            @if (
+              productoForm.get("estado")?.touched &&
+              productoForm.get("estado")?.invalid
+            ) {
+              <mat-error> Estado obligatorio </mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="d-flex justify-content-end gap-8 m-t-24">
+        <button mat-stroked-button type="button" (click)="closeModal()">
+          Cerrar
+        </button>
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="productoForm.invalid"
+        >
+          {{ isEditMode ? "Actualizar" : "Guardar" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

@@ -1,0 +1,503 @@
+<!-- ==========================================
+FILTROS
+========================================== -->
+<mat-card class="modern-filter-card mb-4">
+  <mat-card-content>
+    <div class="row g-3 align-items-enter">
+      <!-- Fecha -->
+      <div class="col-lg-4 col-md-6">
+        <mat-form-field appearance="outline" class="w-100 modern-field">
+          <mat-label>Filtrar por fecha</mat-label>
+
+          <input
+            matInput
+            type="date"
+            [(ngModel)]="filtroFecha"
+            (change)="aplicarFiltros()"
+          />
+
+          <mat-icon matSuffix>event</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Cliente -->
+      <div class="col-lg-5 col-md-6">
+        <mat-form-field appearance="outline" class="w-100 modern-field">
+          <mat-label>Cliente</mat-label>
+
+          <mat-select
+            [(ngModel)]="filtroCliente"
+            (selectionChange)="aplicarFiltros()"
+          >
+            <mat-option [value]="null"> Todos los clientes </mat-option>
+
+            <mat-option *ngFor="let c of clientes()" [value]="c.id">
+              {{ c.nombre }}
+            </mat-option>
+          </mat-select>
+
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Limpiar -->
+      <div class="col-lg-3 col-md-12">
+        <button
+          mat-stroked-button
+          color="primary"
+          class="w-100 modern-clear-btn"
+          (click)="limpiarFiltros()"
+        >
+          <mat-icon>refresh</mat-icon>
+          Limpiar filtros
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- ==========================================
+LOADING
+========================================== -->
+<div
+  *ngIf="isLoading() && groupedByMonth().length === 0"
+  class="loading-container"
+>
+  <mat-spinner diameter="50"></mat-spinner>
+
+  <h5 class="mt-3">Cargando cotizaciones...</h5>
+
+  <p class="text-muted">Estamos obteniendo la información</p>
+</div>
+
+<!-- ==========================================
+MESES
+========================================== -->
+<ng-container *ngFor="let month of displayedMonths(); trackBy: trackByMonthKey">
+  <mat-card class="month-card mb-4">
+    <!-- HEADER MES -->
+    <div class="month-header">
+      <div class="month-left">
+        <mat-icon class="calendar-icon"> calendar_month </mat-icon>
+
+        <h3 class="month-name">
+          {{ month.month_name }}
+        </h3>
+      </div>
+
+      <div class="month-right">
+        <span class="month-label"> Cotizaciones registradas </span>
+
+        <div class="month-counter">
+          {{ month.total_en_mes }}
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+    TABLA
+    ========================================== -->
+    <div class="table-wrapper">
+      <div class="table-card">
+        <div class="table-responsive">
+          <table
+            mat-table
+            multiTemplateDataRows
+            [dataSource]="month.cotizaciones"
+            class="w-100 app-table"
+          >
+            <!-- EVENTO -->
+            <ng-container matColumnDef="evento">
+              <th mat-header-cell *matHeaderCellDef>Evento</th>
+
+              <td mat-cell *matCellDef="let cotizacion" class="fw-semibold">
+                {{ cotizacion.nombre_evento || "Sin nombre" }}
+              </td>
+            </ng-container>
+
+            <!-- CLIENTE -->
+            <ng-container matColumnDef="cliente">
+              <th mat-header-cell *matHeaderCellDef>Cliente</th>
+
+              <td mat-cell *matCellDef="let cotizacion">
+                {{ cotizacion.cliente?.nombre || "N/A" }}
+              </td>
+            </ng-container>
+
+            <!-- FECHA -->
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef>Fecha</th>
+
+              <td mat-cell *matCellDef="let cotizacion">
+                {{ cotizacion.fecha_evento | date: "EEE, d 'de' MMM yyyy" }}
+              </td>
+            </ng-container>
+
+            <!-- TOTAL -->
+            <ng-container matColumnDef="total">
+              <th mat-header-cell *matHeaderCellDef>Total</th>
+
+              <td mat-cell *matCellDef="let cotizacion">
+                <span class="price-text">
+                  {{ cotizacion.total | currency: "USD" }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- ESTADO -->
+            <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+
+              <td mat-cell *matCellDef="let cotizacion">
+                <span
+                  class="estado-chip"
+                  [style.color]="cotizacion.estado_info?.color"
+                  [style.background]="cotizacion.estado_info?.color + '15'"
+                >
+                  {{ cotizacion.estado_info?.item || "N/A" }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- USUARIO -->
+            <ng-container matColumnDef="usuario">
+              <th mat-header-cell *matHeaderCellDef>Usuario</th>
+
+              <td mat-cell *matCellDef="let cotizacion" class="text-muted">
+                {{ cotizacion.user || "Sistema" }}
+              </td>
+            </ng-container>
+
+            <!-- ACCIONES -->
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef class="text-center">
+                Acciones
+              </th>
+
+              <td mat-cell *matCellDef="let cotizacion">
+                <div class="actions-group">
+                  <!-- VER -->
+                  <button
+                    *ngIf="cotizacion.detalles?.length"
+                    mat-icon-button
+                    color="primary"
+                    (click)="toggleDetalles(cotizacion.id)"
+                  >
+                    <mat-icon>
+                      {{
+                        isDetalleVisible(cotizacion.id)
+                          ? "visibility_off"
+                          : "visibility"
+                      }}
+                    </mat-icon>
+                  </button>
+
+                  <!-- EDITAR -->
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    (click)="editarCotizacion(cotizacion)"
+                  >
+                    <mat-icon> edit </mat-icon>
+                  </button>
+
+                  <!-- PDF -->
+                  <button
+                    mat-icon-button
+                    color="accent"
+                    (click)="downloadPDF(cotizacion.id)"
+                  >
+                    <mat-icon> download </mat-icon>
+                  </button>
+
+                  <!-- DELETE -->
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="deleteCotizacion(cotizacion.id)"
+                  >
+                    <mat-icon> delete </mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- ==========================================
+            CHILD ROW
+            ========================================== -->
+            <ng-container matColumnDef="expandedDetail">
+              <td
+                mat-cell
+                *matCellDef="let cotizacion"
+                [attr.colspan]="7"
+                class="detail-cell"
+              >
+                <div
+                  class="detail-wrapper"
+                  [style.display]="
+                    isDetalleVisible(cotizacion.id) ? 'block' : 'none'
+                  "
+                >
+                  <div class="row g-2">
+                    <!-- DETALLES EVENTO -->
+                    <div class="col-lg-5">
+                      <mat-card class="detail-card compact-card">
+                        <mat-card-header>
+                          <div mat-card-avatar class="detail-icon">
+                            <mat-icon>event_note</mat-icon>
+                          </div>
+
+                          <mat-card-title> Detalles del evento </mat-card-title>
+                        </mat-card-header>
+
+                        <mat-card-content class="p-0">
+                          <table
+                            mat-table
+                            [dataSource]="[
+                              {
+                                label: 'Vigencia',
+                                value: cotizacion.fecha_vigencia
+                                  ? (cotizacion.fecha_vigencia
+                                    | date: 'fullDate')
+                                  : 'N/A',
+                              },
+                              {
+                                label: 'Tipo',
+                                value: cotizacion.evento?.item || 'N/A',
+                              },
+                              {
+                                label: 'Duración',
+                                value:
+                                  (cotizacion.duracion_evento || 0) + ' horas',
+                              },
+                              {
+                                label: 'Subtotal',
+                                value: (cotizacion.subtotal | currency),
+                              },
+                              {
+                                label: 'IVA',
+                                value:
+                                  ((cotizacion.iva * cotizacion.subtotal) / 100
+                                  | currency),
+                              },
+                            ]"
+                            class="w-100 app-table compact-table"
+                          >
+                            <ng-container matColumnDef="label">
+                              <td
+                                mat-cell
+                                *matCellDef="let row"
+                                class="label-cell"
+                              >
+                                {{ row.label }}
+                              </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="value">
+                              <td
+                                mat-cell
+                                *matCellDef="let row"
+                                class="value-cell"
+                              >
+                                {{ row.value }}
+                              </td>
+                            </ng-container>
+
+                            <tr
+                              mat-row
+                              *matRowDef="let row; columns: ['label', 'value']"
+                            ></tr>
+                          </table>
+                        </mat-card-content>
+                      </mat-card>
+                    </div>
+
+                    <!-- ITEMS -->
+                    <div class="col-lg-7">
+                      <mat-card class="detail-card compact-card">
+                        <mat-card-header>
+                          <div mat-card-avatar class="detail-icon">
+                            <mat-icon>inventory_2</mat-icon>
+                          </div>
+
+                          <mat-card-title>
+                            Items de la cotización
+                          </mat-card-title>
+                        </mat-card-header>
+
+                        <mat-card-content class="p-0">
+                          <table
+                            mat-table
+                            [dataSource]="cotizacion.detalles || []"
+                            class="w-100 app-table compact-table"
+                          >
+                            <!-- Cantidad -->
+                            <ng-container matColumnDef="cantidad">
+                              <th mat-header-cell *matHeaderCellDef>Cant.</th>
+
+                              <td mat-cell *matCellDef="let detalle">
+                                {{ detalle.cantidad }}
+                              </td>
+                            </ng-container>
+
+                            <!-- Producto -->
+                            <ng-container matColumnDef="producto">
+                              <th mat-header-cell *matHeaderCellDef>
+                                Producto / Paquete
+                              </th>
+
+                              <td mat-cell *matCellDef="let detalle">
+                                {{
+                                  detalle.info_producto?.producto ||
+                                    detalle.info_paquete?.nombre_paquete ||
+                                    "-"
+                                }}
+                              </td>
+                            </ng-container>
+
+                            <!-- Total -->
+                            <ng-container matColumnDef="total">
+                              <th mat-header-cell *matHeaderCellDef>Total</th>
+
+                              <td
+                                mat-cell
+                                *matCellDef="let detalle"
+                                class="price-text"
+                              >
+                                <ng-container
+                                  *ngIf="
+                                    detalle.info_producto;
+                                    else paqueteCosto
+                                  "
+                                >
+                                  {{
+                                    detalle.info_producto?.costo *
+                                      detalle.cantidad | currency
+                                  }}
+                                </ng-container>
+
+                                <ng-template #paqueteCosto>
+                                  {{
+                                    detalle.info_paquete?.precio_total *
+                                      detalle.cantidad | currency
+                                  }}
+                                </ng-template>
+                              </td>
+                            </ng-container>
+
+                            <!-- Descuento -->
+                            <ng-container matColumnDef="descuento">
+                              <th mat-header-cell *matHeaderCellDef>Desc.</th>
+
+                              <td mat-cell *matCellDef="let detalle">
+                                {{ detalle.descuento | currency }}
+                              </td>
+                            </ng-container>
+
+                            <tr
+                              mat-header-row
+                              *matHeaderRowDef="[
+                                'cantidad',
+                                'producto',
+                                'total',
+                                'descuento',
+                              ]"
+                            ></tr>
+
+                            <tr
+                              mat-row
+                              *matRowDef="
+                                let row;
+                                columns: [
+                                  'cantidad',
+                                  'producto',
+                                  'total',
+                                  'descuento',
+                                ]
+                              "
+                            ></tr>
+                          </table>
+                        </mat-card-content>
+                      </mat-card>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- HEADER -->
+            <!-- HEADER -->
+            <tr
+              mat-header-row
+              *matHeaderRowDef="[
+                'evento',
+                'cliente',
+                'fecha',
+                'total',
+                'estado',
+                'usuario',
+                'acciones',
+              ]"
+            ></tr>
+
+            <!-- FILA PRINCIPAL -->
+            <tr
+              mat-row
+              *matRowDef="
+                let cotizacion;
+                columns: [
+                  'evento',
+                  'cliente',
+                  'fecha',
+                  'total',
+                  'estado',
+                  'usuario',
+                  'acciones',
+                ]
+              "
+              class="main-row"
+            ></tr>
+
+            <!-- CHILD ROW -->
+            <tr
+              mat-row
+              *matRowDef="let cotizacion; columns: ['expandedDetail']"
+              class="expanded-row"
+              [class.hidden-row]="!isDetalleVisible(cotizacion.id)"
+            ></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- LOAD MORE -->
+  <div *ngIf="month.tiene_mas" class="text-center mb-4">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="cargarMasPorMes(month.month_key)"
+    >
+      Cargar más cotizaciones
+    </button>
+  </div>
+</ng-container>
+
+<!-- EMPTY -->
+<div *ngIf="!isLoading() && groupedByMonth().length === 0" class="empty-state">
+  <mat-icon> receipt_long </mat-icon>
+
+  <h4>No hay cotizaciones</h4>
+
+  <p>Prueba con otros filtros o crea una nueva cotización.</p>
+</div>
+
+<!-- MODAL -->
+<app-cotizacion-form
+  *ngIf="mostrarFormulario()"
+  [isEditMode]="true"
+  [cotizacionExistente]="cotizacionSeleccionada()"
+  (cotizacionGuardada)="onCotizacionGuardada()"
+  (modalCerrado)="onModalCerrado()"
+>
+</app-cotizacion-form>

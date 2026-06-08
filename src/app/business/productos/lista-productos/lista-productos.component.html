@@ -1,0 +1,202 @@
+<mat-card class="cardWithShadow">
+  <div class="p-24">
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center m-b-24">
+      <!-- Buscador -->
+      <app-producto-search (searchChange)="onSearch($event)">
+      </app-producto-search>
+
+      <div class="d-flex align-items-center gap-16">
+        <!-- Mostrar descripción -->
+        <mat-slide-toggle [(ngModel)]="mostrarDescripcion">
+          Mostrar descripción
+        </mat-slide-toggle>
+
+        <!-- Refresh -->
+        <button mat-stroked-button color="primary" (click)="getProductos()">
+          <i-tabler name="refresh" class="icon-18 m-r-4"> </i-tabler>
+
+          Refresh
+        </button>
+
+        <!-- Nuevo producto -->
+        <app-nuevo-producto
+          [producto]="productoSeleccionado"
+          [isEditMode]="isEditMode"
+          (productoGuardado)="onProductoGuardado($event)"
+        >
+        </app-nuevo-producto>
+      </div>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-responsive">
+      <table mat-table [dataSource]="getPagedProducts()" class="w-100">
+        <!-- Producto -->
+        <ng-container matColumnDef="producto">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600">Producto</th>
+
+          <td mat-cell *matCellDef="let producto">
+            {{ producto.producto }}
+          </td>
+        </ng-container>
+
+        <!-- Descripción -->
+        @if (mostrarDescripcion) {
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600">
+              Descripción
+            </th>
+
+            <td mat-cell *matCellDef="let producto">
+              {{ producto.descripcion }}
+            </td>
+          </ng-container>
+        }
+
+        <!-- Cantidad -->
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            Cantidad
+          </th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center">
+            {{ producto.cantidad }}
+          </td>
+        </ng-container>
+
+        <!-- Tipo costo -->
+        <ng-container matColumnDef="tipo_costo">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            Tipo costo
+          </th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center">
+            <span
+              class="bg-light-primary text-primary rounded p-x-8 p-y-4 f-s-12"
+            >
+              {{ producto.tipo_costo_info?.item }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Valor -->
+        <ng-container matColumnDef="costo">
+          <th mat-header-cell *matHeaderCellDef class="text-center">Valor</th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center">
+            {{ producto.costo | currency }}
+          </td>
+        </ng-container>
+
+        <!-- Ubicación -->
+        <ng-container matColumnDef="ubicacion">
+          <th mat-header-cell *matHeaderCellDef>Ubicación</th>
+
+          <td mat-cell *matCellDef="let producto">
+            {{ producto.ubicacion }}
+          </td>
+        </ng-container>
+
+        <!-- Categoría -->
+        <ng-container matColumnDef="categoria">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            Categoría
+          </th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center">
+            <span
+              class="rounded p-x-8 p-y-4 f-s-12"
+              [ngStyle]="{
+                color: producto.categoria_info?.color,
+              }"
+            >
+              {{ producto.categoria_info?.categoria }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef class="text-center">Estado</th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center">
+            <span
+              class="rounded p-x-8 p-y-4 f-s-12"
+              [ngStyle]="{
+                color: producto.estado_info?.color,
+              }"
+            >
+              {{ producto.estado_info?.item }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Usuario -->
+        <ng-container matColumnDef="usuario">
+          <th mat-header-cell *matHeaderCellDef class="text-center">Usuario</th>
+
+          <td
+            mat-cell
+            *matCellDef="let producto"
+            class="text-center text-muted"
+          >
+            {{ producto.user }}
+          </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            Acciones
+          </th>
+
+          <td mat-cell *matCellDef="let producto" class="text-center">
+            <div class="d-flex justify-content-center gap-8">
+              <!-- Editar -->
+              <app-nuevo-producto
+                [producto]="producto"
+                [isEditMode]="true"
+                (productoGuardado)="onProductoGuardado($event)"
+              >
+              </app-nuevo-producto>
+
+              <!-- Eliminar -->
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="deleteProducto(producto.id)"
+              >
+                <i-tabler name="trash" class="icon-18"> </i-tabler>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Header -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <!-- Rows -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <!-- Empty -->
+      @if (getPagedProducts().length === 0) {
+        <div class="text-center p-24 text-muted">
+          No hay productos disponibles
+        </div>
+      }
+
+      <!-- PAGINACIÓN -->
+      <mat-paginator
+        [length]="filteredProductos().length"
+        [pageSize]="itemsPerPage"
+        [pageIndex]="currentPage - 1"
+        [pageSizeOptions]="[5, 10, 20, 50]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </div>
+</mat-card>

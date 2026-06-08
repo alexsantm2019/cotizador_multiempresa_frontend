@@ -1,0 +1,24 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="row">
+      <!-- Formulario -->
+      <div class="col-lg-5">
+        <app-categoria-form
+          [isEditMode]="isEditMode"
+          [categoriaEditada]="categoriaSeleccionada"
+          (categoriaGuardada)="actualizarLista()"
+        >
+        </app-categoria-form>
+      </div>
+
+      <!-- Tabla -->
+      <div class="col-lg-7">
+        <app-lista-categorias
+          #listaCategorias
+          (editarCategoriaEvent)="editarCategoria($event)"
+        >
+        </app-lista-categorias>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
