@@ -104,12 +104,22 @@ export class CotizacionesCardComponent {
           show: false,
         },
         height: 260,
+        stacked: true,
+        // sparkline: {
+        //   enabled: true,
+        // },
       },
 
       plotOptions: {
+        // bar: {
+        //   horizontal: false,
+        //   columnWidth: '50%',
+        // },
         bar: {
-          horizontal: false,
+          borderRadius: 10,
           columnWidth: '50%',
+          distributed: true,
+          endingShape: 'rounded',
         },
       },
 

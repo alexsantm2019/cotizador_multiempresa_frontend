@@ -4,7 +4,7 @@ import { environment } from '../../../__environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { UserDataInterface } from '../../../gps/_models/userdata.models';
+import { UserDataInterface } from '../../../_gps/_models/userdata.models';
 
 @Injectable({
   providedIn: 'root',

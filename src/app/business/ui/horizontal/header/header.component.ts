@@ -21,6 +21,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ImageUrlPipe } from '../../../../core/pipe/image/image-url.pipe';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 // import { ImageUrlPipe } from '../../../../core/pipe/image/image-url.pipe';
+import { Subscription } from 'rxjs';
 
 interface notifications {
   id: number;
@@ -77,6 +78,7 @@ export class CustomAppHorizontalHeaderComponent implements OnInit {
   isCollapse: boolean = false; // Initially hidden
   showFiller = false;
   fullName: string | null = null;
+  private userSubscription: Subscription | null = null;
   // user: string | null = null;
 
   toggleCollpase() {
@@ -86,12 +88,29 @@ export class CustomAppHorizontalHeaderComponent implements OnInit {
   @Output() optionsChange = new EventEmitter<AppSettings>();
 
   ngOnInit(): void {
-    this.fullName = this.authService.getFullName();
-    this.authService.currentUser$.subscribe((user) => {
+    this.loadUserData();
+   // Suscribirse para cambios futuros
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => {
       console.log('Usuario actual en header:', user);
       this.currentUser = user;
+      this.fullName = user?.full_name || this.authService.getFullName();
       this.cdr.detectChanges();
     });
+  }
+
+  private loadUserData() {
+    // Cargar datos síncronos inmediatamente
+    this.fullName = this.authService.getFullName();
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      this.currentUser = currentUser;
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   public selectedLanguage: any = {

@@ -1,11 +1,10 @@
 <mat-toolbar class="topbar horizontal-topbar b-b-1 gap-10">
   <div class="container">
-    <div class="d-none d-sm-flex">
-      <!-- <app-branding></app-branding> -->
+    <div class="d-none d-sm-flex" [routerLink]="['/business/dashboard']">
       <img
         [src]="currentUser?.empresa_logo ?? null | imageUrl"
         class="align-middle m-2"
-        alt="logo"
+        alt="Mi logo"
         style="height: 40px; width: auto; object-fit: contain"
       />
     </div>
@@ -24,7 +23,7 @@
       <!-- --------------------------------------------------------------- -->
       <!--  Links -->
       <!-- --------------------------------------------------------------- -->
-      <button
+      <!-- <button
         mat-button
         [matMenuTriggerFor]="appsmenu"
         aria-label="Notifications"
@@ -94,8 +93,8 @@
             </div>
           </div>
         </div>
-      </mat-menu>
-      <a mat-button [routerLink]="['/apps/chat']">Chat</a>
+      </mat-menu> -->
+      <!-- <a mat-button [routerLink]="['/apps/chat']">Chat</a> -->
       <!-- <a mat-button [routerLink]="['/apps/calendar']">Calendar</a>
       <a mat-button [routerLink]="['/apps/email/inbox']">Email</a> -->
     </div>

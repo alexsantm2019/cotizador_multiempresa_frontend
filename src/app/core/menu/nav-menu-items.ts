@@ -17,10 +17,10 @@ export const NavMenuItems: NavItem[] = [
     ddType: '1',
   },
   {
-    displayName: 'Catálogos',
+    displayName: 'Productos',
     iconName: 'layout-dashboard',
     bgcolor: 'primary',
-    route: '/business/catalogos',
+    route: '/business/productos',
     ddType: '1',
   },
   {
@@ -31,6 +31,13 @@ export const NavMenuItems: NavItem[] = [
     ddType: '1',
   },
   {
+    displayName: 'Paquetes',
+    iconName: 'layout-dashboard',
+    bgcolor: 'primary',
+    route: '/business/paquetes',
+    ddType: '1',
+  },
+  {
     displayName: 'Cotizaciones',
     iconName: 'layout-dashboard',
     bgcolor: 'primary',
@@ -38,40 +45,58 @@ export const NavMenuItems: NavItem[] = [
     ddType: '1',
   },
   {
-    displayName: 'Productos',
-    iconName: 'point',
+    displayName: 'Ajustes',
+    iconName: 'settings',
     route: '',
     ddType: '1',
     children: [
       {
-        displayName: 'Lista de productos',
+        displayName: 'Catálogos',
         iconName: 'point',
-        route: '/business/productos',
+        route: '/business/catalogos',
       },
       {
-        displayName: 'Categorías',
+        displayName: 'Categorías de productos',
         iconName: 'point',
         route: '/business/categoria-productos',
       },
     ],
   },
-  {
-    displayName: 'Paquetes',
-    iconName: 'layout-dashboard',
-    bgcolor: 'primary',
-    route: '',
-    ddType: '1',
-    children: [
-      {
-        displayName: 'Lista de paquetes',
-        iconName: 'point',
-        route: '/business/paquetes',
-      },
-      {
-        displayName: 'Nuevo paquete',
-        iconName: 'point',
-        route: '/business/nuevo-paquete',
-      },
-    ],
-  },
+  // {
+  //   displayName: 'Productos',
+  //   iconName: 'point',
+  //   route: '',
+  //   ddType: '1',
+  //   children: [
+  //     {
+  //       displayName: 'Lista de productos',
+  //       iconName: 'point',
+  //       route: '/business/productos',
+  //     },
+  //     {
+  //       displayName: 'Categorías',
+  //       iconName: 'point',
+  //       route: '/business/categoria-productos',
+  //     },
+  //   ],
+  // },
+  // {
+  //   displayName: 'Paquetes',
+  //   iconName: 'layout-dashboard',
+  //   bgcolor: 'primary',
+  //   route: '',
+  //   ddType: '1',
+  //   children: [
+  //     {
+  //       displayName: 'Lista de paquetes',
+  //       iconName: 'point',
+  //       route: '/business/paquetes',
+  //     },
+  //     {
+  //       displayName: 'Nuevo paquete',
+  //       iconName: 'point',
+  //       route: '/business/nuevo-paquete',
+  //     },
+  //   ],
+  // },
 ];

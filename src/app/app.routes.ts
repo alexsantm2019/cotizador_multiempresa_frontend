@@ -9,9 +9,14 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     component: FullComponent,
     children: [
+      // {
+      //   path: '',
+      //   redirectTo: '/dashboards/dashboard1',
+      //   pathMatch: 'full',
+      // },
       {
         path: '',
-        redirectTo: '/dashboards/dashboard1',
+        redirectTo: '/business/dashboard',
         pathMatch: 'full',
       },
       {
