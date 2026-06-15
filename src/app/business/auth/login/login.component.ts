@@ -55,7 +55,9 @@ export class LoginComponent {
       () => {
         // console.log('CORRECTO');
         // this.router.navigate(['/apps/prueba']);
-        this.router.navigate(['/dashboards/dashboard1']);
+        // this.router.navigate(['/dashboards/dashboard1']);
+        // this.router.navigate(['/dashboards/dashboard1']);
+        this.router.navigate(['/business/dashboard']);
       },
       (error) => {
         console.error('Error en el login', error);

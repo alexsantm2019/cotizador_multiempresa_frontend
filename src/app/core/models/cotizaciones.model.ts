@@ -1,6 +1,7 @@
 import { CotizacionDetalleInterface } from './cotizacion_detalle.models';
 import { ClientesInterface } from './clientes.model';
 export interface CotizacionInterface {
+  cotizaciones: any;
   id: number;
   fecha_creacion: string;
   clientes_id: number;

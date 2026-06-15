@@ -1,0 +1,39 @@
+<mat-card-content class="position-relative p-t-10">
+  <mat-card class="cardWithShadow">
+    <mat-card-header>
+      <div class="d-flex w-100 justify-content-between mt-2">
+        <div>
+          <mat-card-title>Ingresos por Cotizaciones</mat-card-title>
+          <mat-card-subtitle>Totales agrupados por mes</mat-card-subtitle>
+        </div>
+        <mat-form-field class="theme-select" appearance="outline">
+          <mat-select value="mar">
+            @for (month of months; track month.value) {
+              <mat-option [value]="month.value">
+                {{ month.viewValue }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="row">
+        <div class="col-sm-12">
+          <apx-chart
+            [series]="revenueChart.series"
+            [dataLabels]="revenueChart.dataLabels"
+            [chart]="revenueChart.chart"
+            [legend]="revenueChart.legend"
+            [stroke]="revenueChart.stroke"
+            [grid]="revenueChart.grid"
+            [xaxis]="revenueChart.xaxis"
+            [yaxis]="revenueChart.yaxis"
+            [tooltip]="revenueChart.tooltip"
+            [markers]="revenueChart.markers"
+          ></apx-chart>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</mat-card-content>

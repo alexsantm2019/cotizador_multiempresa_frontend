@@ -101,18 +101,6 @@ export const MainRoutes: Routes = [
       title: 'Nuevo paquete',
     },
   },
-  // {
-  //   path: 'cotizaciones',
-  //   canActivate: [AuthGuard],
-  //   // component: ClientsComponent,
-  //   loadComponent: () =>
-  //     import('../../business/cotizaciones/lista-cotizaciones/lista-cotizaciones.component').then(
-  //       (m) => m.ListaCotizacionesComponent,
-  //     ),
-  //   data: {
-  //     title: 'Cotizaciones',
-  //   },
-  // },
   {
     path: 'cotizaciones',
     canActivate: [AuthGuard],
@@ -123,6 +111,18 @@ export const MainRoutes: Routes = [
       ),
     data: {
       title: 'Cotizaciones',
+    },
+  },
+  {
+    path: 'dashboard',
+    canActivate: [AuthGuard],
+    // component: ClientsComponent,
+    loadComponent: () =>
+      import('../../business/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent,
+      ),
+    data: {
+      title: 'Dashboard Cotizador',
     },
   },
   {

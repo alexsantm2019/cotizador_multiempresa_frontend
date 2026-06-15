@@ -10,12 +10,6 @@ import {
 } from '@angular/core';
 import { Component } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
-import { Observable, catchError, tap, throwError } from 'rxjs';
-import {
-  NgbModal,
-  NgbModalRef,
-  NgbModalModule,
-} from '@ng-bootstrap/ng-bootstrap';
 
 // project import
 // import { SharedModule } from 'src/app/theme/shared/shared.module';
