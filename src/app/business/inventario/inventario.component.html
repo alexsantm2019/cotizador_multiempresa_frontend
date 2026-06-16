@@ -8,6 +8,11 @@
       </div>
 
       <div class="col-md-7 d-flex justify-content-end flex-wrap gap-8">
+        <!-- Mostrar descripción -->
+        <mat-slide-toggle [(ngModel)]="mostrarDescripcion">
+          Mostrar descripción
+        </mat-slide-toggle>
+
         <div class="bg-light-warning text-warning rounded p-x-16 p-y-8 f-w-600">
           Por terminar (1 -
           {{ minimoProductosInventario }})
@@ -54,13 +59,27 @@
         </ng-container>
 
         <!-- Descripción -->
-        <ng-container matColumnDef="descripcion">
+        <!-- inventario.component.html -->
+        <!-- Descripción - Usar @if en el contenedor -->
+        @if (mostrarDescripcion) {
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600">
+              Descripción
+            </th>
+            <td mat-cell *matCellDef="let producto">
+              {{ producto.descripcion }}
+            </td>
+          </ng-container>
+        }
+
+        <!-- Descripción -->
+        <!-- <ng-container matColumnDef="descripcion">
           <th mat-header-cell *matHeaderCellDef class="f-w-600">Descripción</th>
 
           <td mat-cell *matCellDef="let producto">
             {{ producto.descripcion }}
           </td>
-        </ng-container>
+        </ng-container> -->
 
         <!-- Tipo costo -->
         <ng-container matColumnDef="tipoCosto">
@@ -80,8 +99,12 @@
           </th>
 
           <td mat-cell *matCellDef="let producto" class="text-center">
-            <div class="d-flex align-items-center gap-8">
-              <mat-form-field appearance="outline" class="m-b-0">
+            <div class="d-flex align-items-center justify-content-center gap-8">
+              <mat-form-field
+                appearance="outline"
+                class="m-b-0"
+                style="width: 125px !important"
+              >
                 <input
                   matInput
                   type="number"

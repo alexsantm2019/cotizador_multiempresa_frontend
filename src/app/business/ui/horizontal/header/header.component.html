@@ -1,5 +1,5 @@
 <mat-toolbar class="topbar horizontal-topbar b-b-1 gap-10">
-  <div class="container">
+  <div class="container w-100" style="max-width: 100% !important">
     <div class="d-none d-sm-flex" [routerLink]="['/business/dashboard']">
       <img
         [src]="currentUser?.empresa_logo ?? null | imageUrl"
@@ -127,7 +127,7 @@
     <!-- --------------------------------------------------------------- -->
     <!-- langugage Dropdown -->
     <!-- --------------------------------------------------------------- -->
-    <button
+    <!-- <button
       [matMenuTriggerFor]="flags"
       mat-icon-button
       class="m-x-4 d-none d-lg-flex align-items-center justify-content-center"
@@ -136,7 +136,7 @@
         [src]="selectedLanguage.icon"
         class="rounded-circle object-cover icon-20"
       />
-    </button>
+    </button> -->
     <mat-menu #flags="matMenu" class="cardWithShadow">
       @for (lang of languages; track lang.icon) {
         <button mat-menu-item (click)="changeLanguage(lang)">
@@ -257,7 +257,7 @@
     <!-- --------------------------------------------------------------- -->
     <!-- Messages Dropdown -->
     <!-- --------------------------------------------------------------- -->
-    <button
+    <!-- <button
       mat-icon-button
       [matMenuTriggerFor]="msgMenu"
       aria-label="Messages"
@@ -268,7 +268,7 @@
         <span class="heartbit border-primary"></span>
         <span class="point bg-primary"></span>
       </div>
-    </button>
+    </button> -->
     <mat-menu
       #msgMenu="matMenu"
       xPosition="before"
@@ -307,7 +307,7 @@
     <!-- --------------------------------------------------------------- -->
     <!-- Shortcuts Dropdown -->
     <!-- --------------------------------------------------------------- -->
-    <button
+    <!-- <button
       mat-icon-button
       [matMenuTriggerFor]="notificationMenu"
       aria-label="Notifications"
@@ -318,7 +318,7 @@
         <span class="heartbit border-success"></span>
         <span class="point bg-success"></span>
       </div>
-    </button>
+    </button> -->
     <mat-menu
       #notificationMenu="matMenu"
       xPosition="before"

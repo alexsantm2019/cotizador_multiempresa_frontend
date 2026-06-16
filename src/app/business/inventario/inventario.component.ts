@@ -10,7 +10,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ToastrService, ToastrModule } from 'ngx-toastr';
+import { MatIconModule } from '@angular/material/icon';
 import { TablerIconComponent } from 'angular-tabler-icons';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 // Servicio
 import { AuthService } from '../../core/services/auth/auth.service';
@@ -32,24 +34,42 @@ import { InventarioSearchComponent } from './inventario-search/inventario-search
     MatFormFieldModule,
     TablerIconComponent,
     InventarioSearchComponent,
+    MatIconModule,
+    TablerIconComponent,
+    MatSlideToggle,
   ],
   templateUrl: './inventario.component.html',
   styleUrls: ['./inventario.component.scss'],
 })
 export class InventarioComponent implements OnInit {
   private productosService = inject(ProductosService);
-  // private notyf = new Notyf();
-  displayedColumns: string[] = [
-    'producto',
-    'descripcion',
-    'tipoCosto',
-    'cantidad',
-    'actualizado',
-    'usuario',
-  ];
-  // private toastr: ToastrService;
+  mostrarDescripcion: boolean = false;
+
+  // displayedColumns: string[] = [
+  //   'producto',
+  //   'descripcion',
+  //   'tipoCosto',
+  //   'cantidad',
+  //   'actualizado',
+  //   'usuario',
+  // ];
+
+  get displayedColumns(): string[] {
+    const columns = ['producto'];
+    if (this.mostrarDescripcion) {
+      columns.push('descripcion');
+    }
+    columns.push(
+      // 'descripcion',
+      'tipoCosto',
+      'cantidad',
+      'actualizado',
+      'usuario',
+    );
+    return columns;
+  }
+
   private toastr = inject(ToastrService);
-  // productosInventario: ProductosInterface[] = [];
   productosInventario = signal<ProductosInterface[]>([]);
   currentPage = 1;
   pageSize = 20;

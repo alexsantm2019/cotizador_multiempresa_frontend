@@ -1,0 +1,7 @@
+// En tu componente (producto-list.component.scss)
+::ng-deep .mat-drawer-content {
+  overflow: hidden !important;
+  // O si quieres mantener scroll vertical pero no horizontal:
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}

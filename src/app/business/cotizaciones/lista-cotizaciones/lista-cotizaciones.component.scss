@@ -47,7 +47,7 @@ MONTH HEADER
 }
 
 .calendar-icon {
-  color: #2563eb;
+  color: #FB9F83;
   width: 24px;
   height: 24px;
   font-size: 24px;
@@ -83,8 +83,8 @@ MONTH HEADER
   justify-content: center;
 
   background: linear-gradient(135deg,
-      #2563eb,
-      #4f46e5);
+      #FB9F83,
+      #FB9F83);
 
   color: white;
   font-size: 14px;
@@ -377,5 +377,92 @@ RESPONSIVE
   .month-right {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+
+
+
+
+// En tu componente
+.loading-container {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px; // ⭐ Esto crea espacio entre elementos
+  padding: 32px;
+}
+
+.loading-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .icon-48 {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.loading-text {
+  text-align: center;
+  
+  h5 {
+    font-size: 18px;
+    color: #1e293b;
+  }
+  
+  p {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+}
+
+.loading-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  
+  span {
+    width: 8px;
+    height: 8px;
+    background: #FB9F83;
+    border-radius: 50%;
+    animation: bounce 1.4s ease-in-out infinite both;
+    
+    &:nth-child(1) { animation-delay: -0.32s; }
+    &:nth-child(2) { animation-delay: -0.16s; }
+    &:nth-child(3) { animation-delay: 0s; }
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { 
+    transform: scale(0);
+    opacity: 0.3;
+  }
+  40% { 
+    transform: scale(1);
+    opacity: 1;
   }
 }

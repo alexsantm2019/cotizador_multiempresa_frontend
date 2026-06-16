@@ -65,7 +65,6 @@ export class ListaProductosComponent implements OnInit {
   isEditMode: boolean = false;
   productoSeleccionado: ProductosInterface | null = null;
   mostrarDescripcion: boolean = false;
-  // private toastr: ToastrService;
   private toastr = inject(ToastrService);
 
   // EMPRESA:
@@ -89,11 +88,9 @@ export class ListaProductosComponent implements OnInit {
 
   get displayedColumns(): string[] {
     const columns = ['producto'];
-
     if (this.mostrarDescripcion) {
       columns.push('descripcion');
     }
-
     columns.push(
       'cantidad',
       'tipo_costo',
@@ -104,7 +101,6 @@ export class ListaProductosComponent implements OnInit {
       'usuario',
       'acciones',
     );
-
     return columns;
   }
 

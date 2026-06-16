@@ -94,8 +94,9 @@ export class NuevoPaqueteComponent implements OnInit {
     this.getProductos();
     this.getCategoriaProducto();
 
-    this.activatedRoute.paramMap.subscribe((params) => {
-      const id = params.get('paqueteId');
+    this.activatedRoute.queryParams.subscribe((params) => {
+      // const id = params.get('paqueteId');
+      const id = params['paqueteId'];
       console.log('Extrayendo datos de paquete ', id);
       this.paqueteId = id ? parseInt(id, 10) : null; // Convierte el ID a número
       if (this.paqueteId) {
@@ -277,6 +278,7 @@ export class NuevoPaqueteComponent implements OnInit {
           this.detalles.removeAt(0);
         }
         this.showSuccess('Paquete guardado exitosamente');
+        this.router.navigate(['/business/paquetes']); // Redirige a la lista de paquetes
       },
       (error) => {
         this.showError('Error al guardar el paquete');
@@ -300,7 +302,7 @@ export class NuevoPaqueteComponent implements OnInit {
     this.paqueteService.updatePaquete(this.paqueteId!, paqueteData).subscribe(
       (response) => {
         this.showSuccess('Paquete actualizado exitosamente');
-        this.router.navigate(['/paquetes']); // Redirige a la lista de paquetes
+        this.router.navigate(['/business/paquetes']); // Redirige a la lista de paquetes
       },
       (error) => {
         this.showError('Error al actualizar el paquete');

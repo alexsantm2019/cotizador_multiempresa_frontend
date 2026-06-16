@@ -226,30 +226,30 @@ export class CustomAppHorizontalHeaderComponent implements OnInit {
   ];
 
   profiledd: profiledd[] = [
-    {
-      id: 1,
-      img: 'wallet',
-      color: 'primary',
-      title: 'My Profile',
-      subtitle: 'Account Settings',
-      link: '/',
-    },
-    {
-      id: 2,
-      img: 'shield',
-      color: 'success',
-      title: 'My Inbox',
-      subtitle: 'Messages & Email',
-      link: '/',
-    },
-    {
-      id: 3,
-      img: 'credit-card',
-      color: 'error',
-      title: 'My Tasks',
-      subtitle: 'To-do and Daily Tasks',
-      link: '/',
-    },
+    // {
+    //   id: 1,
+    //   img: 'wallet',
+    //   color: 'primary',
+    //   title: 'My Profile',
+    //   subtitle: 'Account Settings',
+    //   link: '/',
+    // },
+    // {
+    //   id: 2,
+    //   img: 'shield',
+    //   color: 'success',
+    //   title: 'My Inbox',
+    //   subtitle: 'Messages & Email',
+    //   link: '/',
+    // },
+    // {
+    //   id: 3,
+    //   img: 'credit-card',
+    //   color: 'error',
+    //   title: 'My Tasks',
+    //   subtitle: 'To-do and Daily Tasks',
+    //   link: '/',
+    // },
   ];
 
   apps: apps[] = [

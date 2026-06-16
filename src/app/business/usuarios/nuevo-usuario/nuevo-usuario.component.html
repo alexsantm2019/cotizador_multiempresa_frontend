@@ -1,0 +1,215 @@
+<!-- src/app/business/usuarios/nuevo-usuario/nuevo-usuario.component.html -->
+
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center m-b-24">
+      <div>
+        <h4 class="m-0">
+          {{ isEditMode ? "Editar Usuario" : "Crear Usuario" }}
+        </h4>
+        <p class="text-muted m-0 f-s-14">
+          {{
+            isEditMode
+              ? "Modifica los datos del usuario"
+              : "Completa los datos para crear un nuevo usuario"
+          }}
+        </p>
+      </div>
+
+      <div>
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          (click)="cancel()"
+        >
+          <i-tabler name="arrow-left" class="icon-18 m-r-4"></i-tabler>
+          Volver
+        </button>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+      <!-- Spinner de carga -->
+      @if (isLoading) {
+        <div class="loading-overlay">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      }
+
+      <div class="row g-16">
+        <!-- Información personal -->
+        <div class="col-12">
+          <h5 class="m-b-16">Información Personal</h5>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nombres</mat-label>
+            <input
+              matInput
+              formControlName="first_name"
+              placeholder="Nombres completos"
+            />
+            <mat-error>{{ getErrorMessage("first_name") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Apellidos</mat-label>
+            <input
+              matInput
+              formControlName="last_name"
+              placeholder="Apellidos completos"
+            />
+            <mat-error>{{ getErrorMessage("last_name") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nombre de usuario</mat-label>
+            <input
+              matInput
+              formControlName="username"
+              placeholder="Nombre de usuario"
+            />
+            <mat-error>{{ getErrorMessage("username") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              formControlName="email"
+              placeholder="email@ejemplo.com"
+              type="email"
+            />
+            <mat-error>{{ getErrorMessage("email") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-divider class="m-y-16"></mat-divider>
+
+        <!-- Contraseña -->
+        <div class="col-12">
+          <h5 class="m-b-16">
+            {{ isEditMode ? "Cambiar Contraseña (Opcional)" : "Contraseña" }}
+          </h5>
+          @if (isEditMode) {
+            <p class="text-muted f-s-13">
+              Deja los campos en blanco para mantener la contraseña actual
+            </p>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Contraseña</mat-label>
+            <input
+              matInput
+              formControlName="password"
+              placeholder="Contraseña"
+              [type]="hidePassword ? 'password' : 'text'"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hidePassword = !hidePassword"
+            >
+              <mat-icon>{{
+                hidePassword ? "visibility_off" : "visibility"
+              }}</mat-icon>
+            </button>
+            <mat-error>{{ getErrorMessage("password") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Confirmar contraseña</mat-label>
+            <input
+              matInput
+              formControlName="confirm_password"
+              placeholder="Confirmar contraseña"
+              [type]="hideConfirmPassword ? 'password' : 'text'"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hideConfirmPassword = !hideConfirmPassword"
+            >
+              <mat-icon>{{
+                hideConfirmPassword ? "visibility_off" : "visibility"
+              }}</mat-icon>
+            </button>
+            <mat-error>{{ getErrorMessage("confirm_password") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-divider class="m-y-16"></mat-divider>
+
+        <!-- Permisos (Simplificado) -->
+        <div class="col-12">
+          <h5 class="m-b-16">Permisos</h5>
+        </div>
+
+        <div class="col-12">
+          <div class="d-flex gap-16 flex-wrap">
+            <mat-slide-toggle formControlName="is_active" color="primary">
+              Usuario activo
+            </mat-slide-toggle>
+
+            <mat-slide-toggle formControlName="is_staff" color="primary">
+              Es administrador
+            </mat-slide-toggle>
+
+            <mat-slide-toggle formControlName="is_superuser" color="primary">
+              Super administrador
+            </mat-slide-toggle>
+          </div>
+        </div>
+
+        <!-- ⭐ Empresa asignada automáticamente (solo visual) -->
+        <div class="col-12">
+          <div class="empresa-info">
+            <mat-icon class="empresa-icon">business</mat-icon>
+            <span class="empresa-text">
+              Este usuario será asignado a la empresa:
+              <strong>{{ empresaId || "No definida" }}</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="m-y-24"></mat-divider>
+
+      <!-- Botones -->
+      <div class="d-flex justify-content-end gap-8">
+        <button mat-stroked-button type="button" (click)="cancel()">
+          Cancelar
+        </button>
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="isLoading"
+        >
+          <i-tabler
+            [name]="isEditMode ? 'edit' : 'save'"
+            class="icon-18 m-r-4"
+          ></i-tabler>
+          {{ isEditMode ? "Actualizar" : "Guardar" }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

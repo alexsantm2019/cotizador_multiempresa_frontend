@@ -20,6 +20,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { TablerIconComponent } from 'angular-tabler-icons';
 
 @Component({
   selector: 'app-cotizaciones',
@@ -32,11 +34,12 @@ import { MatSelectModule } from '@angular/material/select';
 
     ListaCotizacionesComponent,
     CotizadorFormComponent,
-
+    TablerIconComponent,
     MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatIconModule,
   ],
   templateUrl: './cotizaciones-parent.component.html',
   styleUrls: ['./cotizaciones-parent.component.scss'],

@@ -38,11 +38,13 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatOption } from '@angular/material/autocomplete';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   MatFormField,
   MatFormFieldModule,
   MatLabel,
 } from '@angular/material/form-field';
+import { TablerIconComponent } from 'angular-tabler-icons';
 
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -69,6 +71,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatProgressSpinnerModule,
     MatChipsModule,
     MatTableModule,
+    TablerIconComponent,
+    MatTooltipModule,
   ],
   templateUrl: './lista-cotizaciones.component.html',
   styleUrls: ['./lista-cotizaciones.component.scss'],
@@ -486,39 +490,26 @@ export class ListaCotizacionesComponent implements OnInit, OnChanges {
     this.cotizacionService.downloadPDF(id).subscribe({
       next: (response) => {
         const blob = response.body as Blob;
-
         const fileURL = URL.createObjectURL(blob);
-
         const contentDisposition = response.headers.get('Content-Disposition');
-
         let fileName = 'cotizacion.pdf';
-
         if (contentDisposition) {
           const matches = /filename="?([^"]+)"?/i.exec(contentDisposition);
-
           if (matches && matches[1]) {
             fileName = matches[1];
           }
         }
-
         const a = document.createElement('a');
-
         a.href = fileURL;
-
         a.download = fileName;
-
         a.click();
-
         URL.revokeObjectURL(fileURL);
-
         this.showSuccess(
           `Cotización descargada correctamente como ${fileName}`,
         );
       },
-
       error: (error) => {
         console.error(error);
-
         this.showError('Error al descargar PDF');
       },
     });

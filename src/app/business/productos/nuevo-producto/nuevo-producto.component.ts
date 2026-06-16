@@ -92,6 +92,7 @@ export class NuevoProductoComponent {
       descripcion: [''],
       tipo_costo: ['', [Validators.required]],
       costo: [0, [Validators.required, Validators.min(0)]],
+      cantidad: [0, [Validators.required, Validators.min(0)]],
       ubicacion: [''],
       estado: ['', [Validators.required]],
       categoria_producto_id: ['', [Validators.required]],
@@ -206,11 +207,29 @@ export class NuevoProductoComponent {
       .subscribe({
         next: (data) => {
           this.estadosProductos = data; // Asignamos los datos obtenidos
+          // Establecer el valor por defecto "Activo" después de cargar los datos
+          this.setDefaultEstado();
         },
         error: (error) => {
           console.error('Error al obtener tipo de costos:', error);
         },
       });
+  }
+
+  private setDefaultEstado(): void {
+    // Buscar el estado "Activo" (código 1 según tu ejemplo)
+    const estadoActivo = this.estadosProductos.find(estado => estado.codigo === 1);
+    
+    if (estadoActivo) {
+      this.productoForm.patchValue({
+        estado: estadoActivo.codigo
+      });
+    } else if (this.estadosProductos.length > 0) {
+      // Si no encuentra "Activo", usar el primer estado
+      this.productoForm.patchValue({
+        estado: this.estadosProductos[0].codigo
+      });
+    }
   }
 
   showSuccess(msg: any) {

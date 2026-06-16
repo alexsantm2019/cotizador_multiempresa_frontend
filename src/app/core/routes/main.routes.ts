@@ -102,6 +102,17 @@ export const MainRoutes: Routes = [
     },
   },
   {
+    path: 'editar-paquete/:id?',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('../../business/paquetes/nuevo-paquete/nuevo-paquete.component').then(
+        (m) => m.NuevoPaqueteComponent,
+      ),
+    data: {
+      title: 'Editar Paquete',
+    },
+  },
+  {
     path: 'cotizaciones',
     canActivate: [AuthGuard],
     // component: ClientsComponent,
@@ -124,6 +135,36 @@ export const MainRoutes: Routes = [
     data: {
       title: 'Dashboard Cotizador',
     },
+  },
+  {
+    path: 'usuarios',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('../../business/usuarios/lista-usuarios/lista-usuarios.component').then(
+            (m) => m.ListaUsuariosComponent,
+          ),
+        data: { title: 'Usuarios' },
+      },
+      {
+        path: 'nuevo',
+        loadComponent: () =>
+          import('../../business/usuarios/nuevo-usuario/nuevo-usuario.component').then(
+            (m) => m.NuevoUsuarioComponent,
+          ),
+        data: { title: 'Nuevo Usuario' },
+      },
+      {
+        path: 'editar/:id',
+        loadComponent: () =>
+          import('../../business/usuarios/nuevo-usuario/nuevo-usuario.component').then(
+            (m) => m.NuevoUsuarioComponent,
+          ),
+        data: { title: 'Editar Usuario' },
+      },
+    ],
   },
   {
     path: '**',

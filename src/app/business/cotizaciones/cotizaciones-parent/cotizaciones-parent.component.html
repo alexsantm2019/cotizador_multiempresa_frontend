@@ -2,14 +2,6 @@
   <mat-card-content>
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center m-b-24">
-      <!-- Formulario nueva cotización -->
-      <app-cotizacion-form
-        [isEditMode]="false"
-        [cotizacionExistente]="null"
-        (cotizacionGuardada)="actualizarListaCotizaciones()"
-      >
-      </app-cotizacion-form>
-
       <!-- Filtro -->
       <form [formGroup]="filterForm" class="d-flex align-items-center gap-16">
         <mat-form-field appearance="outline">
@@ -23,14 +15,23 @@
         </mat-form-field>
 
         <button
-          mat-flat-button
+          mat-stroked-button
           color="primary"
           type="button"
           (click)="actualizarListaCotizaciones()"
         >
+          <i-tabler name="refresh" class="icon-18 m-r-4"></i-tabler>
           Refresh
         </button>
       </form>
+
+      <!-- Formulario nueva cotización -->
+      <app-cotizacion-form
+        [isEditMode]="false"
+        [cotizacionExistente]="null"
+        (cotizacionGuardada)="actualizarListaCotizaciones()"
+      >
+      </app-cotizacion-form>
     </div>
     <!-- Lista -->
     <app-lista-cotizaciones

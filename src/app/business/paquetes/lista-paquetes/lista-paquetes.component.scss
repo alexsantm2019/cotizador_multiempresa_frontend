@@ -1,0 +1,89 @@
+// lista-paquetes.component.scss
+
+// ⭐ Estilo para la fila de detalle
+.detalle-row {
+  td {
+    padding: 12px 16px !important;
+    background-color: #f8fafc !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+  }
+}
+
+// ⭐ Contenedor del detalle
+.detalle-container {
+  width: 100%;
+  padding: 8px 0;
+  
+  .detalles-table {
+    width: 100%;
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    
+    thead {
+      background: #f1f5f9;
+      
+      th {
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+        padding: 8px 12px;
+        border: 1px solid #e2e8f0;
+        text-align: center;
+      }
+    }
+    
+    tbody {
+      td {
+        padding: 6px 12px;
+        border: 1px solid #e2e8f0;
+        font-size: 13px;
+        text-align: center;
+        vertical-align: middle;
+        
+        &.text-start {
+          text-align: left;
+        }
+      }
+      
+      tr {
+        background: white;
+        
+        &:hover {
+          background: #f8fafc;
+        }
+      }
+    }
+  }
+}
+
+// ⭐ Animación de expansión
+.detalle-row {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ⭐ Estilos para la columna de acciones (opcional)
+.mat-column-acciones {
+  min-width: 160px !important;
+}
+
+
+// En tu componente (producto-list.component.scss)
+::ng-deep .mat-drawer-content {
+  overflow: hidden !important;
+  // O si quieres mantener scroll vertical pero no horizontal:
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}

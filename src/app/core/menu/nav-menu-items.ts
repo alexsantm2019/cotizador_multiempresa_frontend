@@ -10,6 +10,13 @@ export const NavMenuItems: NavItem[] = [
   //   ddType: '1',
   // },
   {
+    displayName: 'Usuarios',
+    iconName: 'layout-dashboard',
+    bgcolor: 'primary',
+    route: '/business/usuarios',
+    ddType: '1',
+  },
+  {
     displayName: 'Clientes',
     iconName: 'layout-dashboard',
     bgcolor: 'primary',

@@ -47,3 +47,31 @@
   .table-valor {width: 20% !important;}
   .table-acciones {width: 20% !important;}
   
+
+
+  // ============================================
+
+  // nuevo-paquete.component.scss
+
+.table-responsive {
+  margin-top: 16px;
+  
+  table {
+    width: 100%;
+    
+    th {
+      font-weight: 600;
+      color: #475569;
+      font-size: 13px;
+    }
+    
+    td {
+      padding: 8px !important;
+      vertical-align: middle;
+    }
+    
+    .mat-form-field {
+      margin: 0 !important;
+    }
+  }
+}

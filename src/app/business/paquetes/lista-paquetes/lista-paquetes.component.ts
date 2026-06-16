@@ -7,6 +7,7 @@ import {
   TemplateRef,
   signal,
   computed,
+  effect,
 } from '@angular/core';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
@@ -21,16 +22,14 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { TablerIconComponent } from 'angular-tabler-icons';
 import { ToastrService, ToastrModule } from 'ngx-toastr';
-// project import
-// import { SharedModule } from 'src/app/theme/shared/shared.module';
-// import { Notyf } from 'notyf';
-// import { NuevoProductoComponent } from '../nuevo-producto/nuevo-producto.component';
+import { MatSlideToggle, MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 // Servicio:
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { PaquetesService } from '../../../core/services/paquetes/paquetes.service';
 import { PaqueteInterface } from '../../../core/models/paquetes.models';
 import { PaqueteSearchComponent } from '../paquete-search/paquete-search.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-lista-paquetes',
@@ -42,14 +41,23 @@ import { PaqueteSearchComponent } from '../paquete-search/paquete-search.compone
     MatButtonModule,
     MatIconModule,
     MatPaginatorModule,
-    MatTableModule,
     TablerIconComponent,
+    MatTableModule,
+    MatSlideToggle,
+    FormsModule,
+    MatSlideToggleModule,
+    MatSlideToggle,
   ],
   templateUrl: './lista-paquetes.component.html',
   styleUrls: ['./lista-paquetes.component.scss'],
 })
 export class ListaPaquetesComponent implements OnInit {
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+        effect(() => {
+          console.log('DataSource actualizado:', this.dataSource());
+          console.log('visibleDetallesId:', this.visibleDetallesId());
+        });
+  }
 
   // private toastr: ToastrService;
   private toastr = inject(ToastrService);
@@ -62,14 +70,23 @@ export class ListaPaquetesComponent implements OnInit {
   isEditMode: boolean = false;
   paqueteSeleccionado: PaqueteInterface | null = null;
   expandedPaquetes: { [key: number]: boolean } = {};
-  visibleDetallesId: number | null = null;
-  displayedColumns: string[] = [
-    'paquete',
-    'descripcion',
-    'costo',
-    'estado',
-    'acciones',
-  ];
+  // visibleDetallesId: number | null = null;
+  mostrarDescripcion: boolean = false;
+  // displayedColumns: string[] = [
+  //   'paquete',
+  //   'descripcion',
+  //   'costo',
+  //   'estado',
+  //   'acciones',
+  // ];
+  get displayedColumns(): string[] {
+    const columns = ['paquete'];
+    if (this.mostrarDescripcion) {
+      columns.push('descripcion');
+    }
+    columns.push('costo', 'estado', 'acciones');
+    return columns;
+  }
   // Filtro:
   searchTerm = signal('');
   filteredPaquetes = computed(() =>
@@ -84,21 +101,63 @@ export class ListaPaquetesComponent implements OnInit {
   private authService = inject(AuthService);
   empresaId: number | null = null;
 
+
   ngOnInit(): void {
     this.empresaId = this.authService.getEmpresaId();
     this.getPaquetes();
   }
 
-  // Verifica si los detalles de un paquete están visibles
-  isDetalleVisible(id: number): boolean {
-    return this.visibleDetallesId === id;
-  }
+  // ⭐ Convertir visibleDetallesId a signal
+  visibleDetallesId = signal<number | null>(null);
 
-  // Alterna la visibilidad de los detalles del paquete
+  // ⭐ DataSource que combina filas principales + detalles
+  dataSource = computed(() => {
+    const paquetes = this.getPagedPaquetes();
+    const rows: any[] = [];
+    const visibleId = this.visibleDetallesId(); // ⭐ Leer la signal
+
+    paquetes.forEach((paquete) => {
+      // Fila principal
+      rows.push({
+        ...paquete,
+        isMainRow: true,
+        isDetailRow: false,
+      });
+
+      // Fila de detalle (solo si está expandido)
+      if (
+        visibleId === paquete.id &&
+        paquete.detalles &&
+        paquete.detalles.length > 0
+      ) {
+        rows.push({
+          ...paquete,
+          isMainRow: false,
+          isDetailRow: true,
+        });
+      }
+    });
+
+    return rows;
+  });
+
+  // ⭐ Métodos para identificar tipos de fila
+  isMainRow = (index: number, rowData: any): boolean => {
+    return rowData && rowData.isMainRow === true;
+  };
+
+  isDetailRow = (index: number, rowData: any): boolean => {
+    return rowData && rowData.isDetailRow === true;
+  };
+
+  // ⭐ Alternar visibilidad de detalles
   toggleDetalles(id: number): void {
-    this.visibleDetallesId = this.visibleDetallesId === id ? null : id;
+    this.visibleDetallesId.update((current) => (current === id ? null : id));
   }
 
+  isDetalleVisible(id: number): boolean {
+    return this.visibleDetallesId() === id;
+  }
   // Obtiene los paquetes desde el servicio
   getPaquetes(): void {
     let id = this.empresaId!;
@@ -126,17 +185,6 @@ export class ListaPaquetesComponent implements OnInit {
     );
   }
 
-  // Cambia la página de la tabla
-  // changePage(page: number): void {
-  //   this.currentPage = page;
-  // }
-
-  // Obtiene un arreglo de páginas posibles para la paginación
-  // getPageArray(totalItems: number): number[] {
-  //   const totalPages = Math.ceil(totalItems / this.itemsPerPage);
-  //   return Array.from({ length: totalPages }, (_, index) => index + 1);
-  // }
-
   // Elimina un producto (paquete)
   deletePaquete(id: number): void {
     console.log('Eliminar paquete con id:', id);
@@ -150,7 +198,6 @@ export class ListaPaquetesComponent implements OnInit {
         this.showError(error);
       },
     );
-    // Lógica de eliminación aquí...
   }
 
   nuevoPaquete(): void {
@@ -158,7 +205,11 @@ export class ListaPaquetesComponent implements OnInit {
   }
 
   editarPaquete(id: number): void {
-    this.router.navigate(['/business/editar-paquete', id]);
+    this.router.navigate(['/business/nuevo-paquete'], {
+      queryParams: { paqueteId: id },
+    });
+    // this.router.navigate(['/business/editar-paquete', id]);
+    //  this.router.navigate(['/business/paquete', id]);
   }
 
   onPageChange(event: PageEvent): void {

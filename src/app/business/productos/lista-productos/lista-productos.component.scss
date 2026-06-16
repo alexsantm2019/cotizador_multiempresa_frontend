@@ -1,0 +1,125 @@
+// producto-list.component.scss
+
+.cardWithShadow {
+  .p-24 {
+    // HEADER responsivo
+    .d-flex {
+      flex-wrap: wrap;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 12px;
+        
+        .d-flex {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+
+// Contenedor de tabla
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 16px 0;
+  
+  &::-webkit-scrollbar {
+    height: 8px;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+    
+    &:hover {
+      background-color: #555;
+    }
+  }
+}
+
+.table-responsive {
+  min-width: 1100px; // Ajusta según tus necesidades
+  
+  table {
+    width: 100%;
+    min-width: 100%;
+    
+    th, td {
+      padding: 12px 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+    
+    // Columnas específicas
+    .mat-column-producto {
+      min-width: 120px;
+    }
+    
+    .mat-column-descripcion {
+      min-width: 150px;
+      max-width: 200px;
+    }
+    
+    .mat-column-cantidad,
+    .mat-column-estado {
+      min-width: 80px;
+    }
+    
+    .mat-column-tipo_costo,
+    .mat-column-costo,
+    .mat-column-ubicacion,
+    .mat-column-categoria,
+    .mat-column-usuario {
+      min-width: 100px;
+    }
+    
+    .mat-column-acciones {
+      min-width: 120px;
+      position: sticky;
+      right: 0;
+      background: white;
+      z-index: 1;
+      
+      @media (max-width: 768px) {
+        position: static;
+      }
+    }
+  }
+}
+
+// Paginador
+mat-paginator {
+  margin-top: 16px;
+  
+  @media (max-width: 600px) {
+    .mat-paginator-container {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+}
+
+// Badges responsivos
+span[class*="rounded"] {
+  display: inline-block;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// En tu componente (producto-list.component.scss)
+::ng-deep .mat-drawer-content {
+  overflow: hidden !important;
+  // O si quieres mantener scroll vertical pero no horizontal:
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}

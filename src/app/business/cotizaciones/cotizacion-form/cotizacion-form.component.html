@@ -305,15 +305,33 @@
                 <th mat-header-cell *matHeaderCellDef>Cantidad</th>
 
                 <td mat-cell *matCellDef="let item; let i = index">
-                  <input
-                    *ngIf="!item.disable"
-                    matInput
-                    type="number"
-                    min="1"
-                    [(ngModel)]="item.cantidad"
-                    (input)="actualizarTotal(i)"
-                    [ngModelOptions]="{ standalone: true }"
-                  />
+                  <mat-form-field
+                    appearance="outline"
+                    class="m-b-0"
+                    style="width: 125px !important"
+                  >
+                    <input
+                      *ngIf="!item.disable"
+                      matInput
+                      type="number"
+                      min="1"
+                      [(ngModel)]="item.cantidad"
+                      (input)="actualizarTotal(i)"
+                      [ngModelOptions]="{ standalone: true }"
+                    />
+                  </mat-form-field>
+                  <!-- <mat-form-field
+                appearance="outline"
+                class="m-b-0"
+                style="width: 125px !important"
+              >
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  [(ngModel)]="producto.cantidad"
+                />
+              </mat-form-field> -->
                 </td>
               </ng-container>
 

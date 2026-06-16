@@ -123,6 +123,7 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
   // EMPRESA:
   private authService = inject(AuthService);
   empresaId: number | null = null;
+  userId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -142,6 +143,7 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.empresaId = this.authService.getEmpresaId();
+    this.userId = this.authService.getUserId();
     this.cargarCatalogos();
     if (this.data) {
       this.isEditMode = this.data.isEditMode ?? false;
@@ -476,6 +478,7 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
     this.isSaving = true;
     const formValue = this.cotizacionForm.value;
     const empresaId = this.authService.getEmpresaId();
+    const userId = this.authService.getUserId();
 
     const cotizacion = {
       id: this.cotizacionExistente?.id,
@@ -490,7 +493,7 @@ export class CotizadorFormComponent implements OnInit, OnChanges {
       tipo_evento: formValue.tipoEvento,
       duracion_evento: formValue.duracionEvento,
       empresa_id: empresaId,
-
+      user: userId,
       detalles: this.itemsCotizacion.map((item) => ({
         cantidad: item.cantidad,
         paquete: item.tipo === 2 ? item.id : null,
