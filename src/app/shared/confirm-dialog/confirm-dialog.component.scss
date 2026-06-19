@@ -1,0 +1,142 @@
+// src/app/shared/components/confirm-dialog/confirm-dialog.component.scss
+
+.confirm-dialog {
+  padding: 24px 24px 8px 24px;
+  max-width: 420px;
+  min-width: 320px;
+
+  .dialog-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 16px auto;
+
+    .icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    // ⭐ Tipos de iconos
+    &.warning {
+      background: #fef3c7;
+      color: #d97706;
+
+      .icon {
+        color: #d97706;
+      }
+    }
+
+    &.danger {
+      background: #fee2e2;
+      color: #dc2626;
+
+      .icon {
+        color: #dc2626;
+      }
+    }
+
+    &.info {
+      background: #dbeafe;
+      color: #2563eb;
+
+      .icon {
+        color: #2563eb;
+      }
+    }
+
+    &.success {
+      background: #d1fae5;
+      color: #059669;
+
+      .icon {
+        color: #059669;
+      }
+    }
+  }
+
+  .dialog-content {
+    text-align: center;
+
+    .dialog-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0 0 8px 0;
+      line-height: 1.3;
+    }
+
+    .dialog-message {
+      font-size: 15px;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.5;
+    }
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+
+    .btn-cancel {
+      color: #64748b;
+      font-weight: 500;
+
+      &:hover {
+        background: #f1f5f9;
+        color: #475569;
+      }
+    }
+
+    .btn-confirm {
+      min-width: 80px;
+      font-weight: 500;
+      border-radius: 8px;
+    }
+  }
+}
+
+// ⭐ Responsive
+@media (max-width: 480px) {
+  .confirm-dialog {
+    padding: 20px 16px 8px 16px;
+    min-width: unset;
+
+    .dialog-icon {
+      width: 48px;
+      height: 48px;
+
+      .icon {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    .dialog-content {
+      .dialog-title {
+        font-size: 18px;
+      }
+
+      .dialog-message {
+        font-size: 14px;
+      }
+    }
+
+    .dialog-actions {
+      flex-direction: column-reverse;
+      gap: 8px;
+
+      .btn-cancel,
+      .btn-confirm {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}

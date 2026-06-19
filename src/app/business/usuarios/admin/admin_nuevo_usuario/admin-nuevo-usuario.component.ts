@@ -1,6 +1,6 @@
 // src/app/business/usuarios/nuevo-usuario/nuevo-usuario.component.ts
 
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -21,11 +21,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { TablerIconsModule } from 'angular-tabler-icons';
-import { UsuariosService } from '../../../core/services/usuarios/usuarios.service';
-import { AuthService } from '../../../core/services/auth/auth.service';
+import { UsuariosService } from '../../../../core/services/usuarios/usuarios.service';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { EmpresasService } from '../../../../core/services/empresas/empresas.service';
 
 @Component({
-  selector: 'app-nuevo-usuario',
+  selector: 'app-admin-nuevo-usuario',
   standalone: true,
   imports: [
     CommonModule,
@@ -43,16 +44,17 @@ import { AuthService } from '../../../core/services/auth/auth.service';
     MatProgressSpinnerModule,
     TablerIconsModule,
   ],
-  templateUrl: './nuevo-usuario.component.html',
-  styleUrls: ['./nuevo-usuario.component.scss'],
+  templateUrl: './admin-nuevo-usuario.component.html',
+  styleUrls: ['./admin-nuevo-usuario.component.scss'],
 })
-export class NuevoUsuarioComponent implements OnInit {
+export class AdminNuevoUsuarioComponent implements OnInit {
   private fb = inject(FormBuilder);
   private usuarioService = inject(UsuariosService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private toastr = inject(ToastrService);
+  private empresaService = inject(EmpresasService);
 
   usuarioForm!: FormGroup;
   isEditMode = false;
@@ -61,12 +63,15 @@ export class NuevoUsuarioComponent implements OnInit {
   hidePassword = true;
   hideConfirmPassword = true;
   empresaId: number | null = null;
+  empresas = signal<any[]>([]);
+  isLoadingEmpresas = signal<boolean>(false);
 
   ngOnInit(): void {
     // Obtener empresaId del usuario logueado
     this.empresaId = this.authService.getEmpresaId();
     this.initForm();
     this.loadUsuarioIfEdit();
+    this.cargarEmpresas();
   }
 
   /**
@@ -84,6 +89,8 @@ export class NuevoUsuarioComponent implements OnInit {
         is_active: [true],
         is_staff: [false],
         is_superuser: [false],
+        es_admin_empresa: [false],
+        empresa_id: [this.empresaId || null, Validators.required],
         // ⭐ empresa_id se asigna automáticamente, no en el formulario
       },
       { validators: this.passwordMatchValidator },
@@ -124,6 +131,7 @@ export class NuevoUsuarioComponent implements OnInit {
     this.isLoading = true;
     this.usuarioService.getUsuarioById(id).subscribe({
       next: (user) => {
+        console.log("USER: " + JSON.stringify(user))
         this.usuarioForm.patchValue({
           username: user.username,
           email: user.email,
@@ -132,6 +140,8 @@ export class NuevoUsuarioComponent implements OnInit {
           is_active: user.is_active,
           is_staff: user.is_staff,
           is_superuser: user.is_superuser,
+          es_admin_empresa: user.es_admin_empresa || false,
+          empresa_id: user.empresa_id || this.empresaId,
         });
 
         // En edición, la contraseña es opcional
@@ -140,10 +150,8 @@ export class NuevoUsuarioComponent implements OnInit {
           .get('password')
           ?.setValidators([Validators.minLength(6)]);
         this.usuarioForm.get('password')?.updateValueAndValidity();
-
         this.usuarioForm.get('confirm_password')?.clearValidators();
         this.usuarioForm.get('confirm_password')?.updateValueAndValidity();
-
         this.isLoading = false;
       },
       error: (error) => {
@@ -152,6 +160,54 @@ export class NuevoUsuarioComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  /**
+   * Cargar lista de empresas (solo para superadmin)
+   */
+  cargarEmpresas(): void {
+    const user = this.authService.getCurrentUser();
+
+    // Solo cargar empresas si es superadmin
+    // if (user?.is_superuser) {
+      this.isLoadingEmpresas.set(true);
+      this.empresaService.getTodasEmpresas().subscribe({
+        next: (response) => {
+          console.log('📊 Respuesta completa:', response);
+
+          // ⭐ Extraer el array 'data' de la respuesta
+          if (response && response.success && response.data) {
+            // Si la respuesta tiene { success: true, data: [...] }
+            this.empresas.set(response.data);
+            console.log('✅ Empresas cargadas:', this.empresas());
+          } else if (Array.isArray(response)) {
+            // Si la respuesta es directamente un array
+            this.empresas.set(response);
+          } else {
+            // Fallback: intentar obtener data de otras formas
+            const data = response?.data || response?.results || [];
+            this.empresas.set(data);
+          }
+          this.isLoadingEmpresas.set(false);
+        },
+        error: (error) => {
+          console.error('❌ Error al cargar empresas:', error);
+          this.toastr.error('Error al cargar la lista de empresas');
+          this.empresas.set([]);
+          this.isLoadingEmpresas.set(false);
+        },
+      });
+    // } else {
+    //   // Si no es superadmin, solo mostrar su empresa
+    //   this.empresaService.getEmpresaById(this.empresaId!).subscribe({
+    //     next: (data) => {
+    //       this.empresas.set([data]);
+    //     },
+    //     error: (error) => {
+    //       console.error('Error al cargar empresa:', error);
+    //     },
+    //   });
+    // }
   }
 
   /**
@@ -169,7 +225,15 @@ export class NuevoUsuarioComponent implements OnInit {
     delete formData.confirm_password;
 
     // ⭐ Asignar empresa_id automáticamente
-    formData.empresa_id = this.empresaId;
+    // formData.empresa_id = this.empresaId;
+    if (!formData.empresa_id) {
+      this.toastr.error('Debes seleccionar una empresa');
+      this.isLoading = false;
+      return;
+    }
+    
+
+    formData.es_admin_empresa = formData.es_admin_empresa || false;
 
     // Si es edición y no tiene contraseña, la eliminamos
     if (this.isEditMode && !formData.password) {
@@ -178,10 +242,10 @@ export class NuevoUsuarioComponent implements OnInit {
 
     if (!this.isEditMode) {
       // Crear usuario
-      this.usuarioService.createUsuario(formData).subscribe({
+      this.usuarioService.crearUsuarioConEmpresa(formData).subscribe({
         next: () => {
           this.toastr.success('Usuario creado correctamente');
-          this.router.navigate(['/business/usuarios']);
+          this.router.navigate(['/business/admin-usuarios']);
         },
         error: (error) => {
           console.error('Error al crear usuario:', error);
@@ -194,7 +258,7 @@ export class NuevoUsuarioComponent implements OnInit {
       this.usuarioService.updateUsuario(this.userId!, formData).subscribe({
         next: () => {
           this.toastr.success('Usuario actualizado correctamente');
-          this.router.navigate(['/business/usuarios']);
+          this.router.navigate(['/business/admin-usuarios']);
         },
         error: (error) => {
           console.error('Error al actualizar usuario:', error);
@@ -228,7 +292,7 @@ export class NuevoUsuarioComponent implements OnInit {
    * Cancelar y volver
    */
   cancel(): void {
-    this.router.navigate(['/business/usuarios']);
+    this.router.navigate(['/business/admin-usuarios']);
   }
 
   /**

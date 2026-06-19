@@ -1,0 +1,222 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center m-b-24">
+      <div>
+        <h4 class="m-0">
+          {{ isEditMode ? "Editar Empresa" : "Crear Empresa" }}
+        </h4>
+        <p class="text-muted m-0 f-s-14">
+          {{
+            isEditMode
+              ? "Modifica los datos de la empresa"
+              : "Completa los datos para crear una nueva empresa"
+          }}
+        </p>
+      </div>
+
+      <div>
+        <button
+          mat-stroked-button
+          color="primary"
+          type="button"
+          (click)="cancel()"
+        >
+          <i-tabler name="arrow-left" class="icon-18 m-r-4"></i-tabler>
+          Volver
+        </button>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <form [formGroup]="empresaForm" (ngSubmit)="onSubmit()">
+      <!-- Spinner de carga -->
+      @if (isLoading) {
+        <div class="loading-overlay">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      }
+
+      <div class="row g-16">
+        <!-- Información básica -->
+        <div class="col-12">
+          <h5 class="m-b-16">Información de la Empresa</h5>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nombre de la empresa *</mat-label>
+            <input
+              matInput
+              formControlName="nombre"
+              placeholder="Nombre de la empresa"
+            />
+            <mat-error>{{ getErrorMessage("nombre") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>RUC</mat-label>
+            <input
+              matInput
+              formControlName="ruc"
+              placeholder="1234567890011"
+              maxlength="13"
+            />
+            <mat-error>{{ getErrorMessage("ruc") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Dirección</mat-label>
+            <input
+              matInput
+              formControlName="direccion"
+              placeholder="Dirección de la empresa"
+            />
+            <mat-error>{{ getErrorMessage("direccion") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Teléfono</mat-label>
+            <input
+              matInput
+              formControlName="telefono"
+              placeholder="Teléfono de contacto"
+            />
+            <mat-error>{{ getErrorMessage("telefono") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              formControlName="email"
+              placeholder="email@empresa.com"
+              type="email"
+            />
+            <mat-error>{{ getErrorMessage("email") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-divider class="m-y-16"></mat-divider>
+
+        <!-- Logo -->
+        <div class="col-12">
+          <h5 class="m-b-16">Logo de la Empresa</h5>
+        </div>
+
+        <div class="col-12">
+          <div class="logo-container">
+            <!-- Previsualización del logo -->
+            @if (logoPreview) {
+              <div class="logo-preview">
+                <img
+                  [src]="logoPreview | imageUrl"
+                  alt="Logo de la empresa"
+                  class="logo-image"
+                />
+                <button
+                  mat-icon-button
+                  color="warn"
+                  type="button"
+                  class="remove-logo"
+                  (click)="removeLogo()"
+                >
+                  <i-tabler name="x" class="icon-18"></i-tabler>
+                </button>
+              </div>
+            }
+
+            <!-- Botón para subir logo -->
+            <div class="logo-upload" [class.has-logo]="logoPreview">
+              <input
+                id="logoInput"
+                type="file"
+                accept="image/*"
+                (change)="onFileSelected($event)"
+                class="logo-input"
+              />
+              <label for="logoInput" class="logo-label">
+                <i-tabler name="upload" class="icon-24"></i-tabler>
+                <span>Subir logo</span>
+                <small>PNG, JPG o JPEG (max. 2MB)</small>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <mat-divider class="m-y-16"></mat-divider>
+
+        <!-- Configuración -->
+        <div class="col-12">
+          <h5 class="m-b-16">Configuración</h5>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Plan</mat-label>
+            <mat-select formControlName="plan">
+              @for (plan of planes; track plan.value) {
+                <mat-option [value]="plan.value">
+                  {{ plan.label }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Máximo de usuarios</mat-label>
+            <input
+              matInput
+              formControlName="max_usuarios"
+              type="number"
+              min="1"
+            />
+            <mat-error>{{ getErrorMessage("max_usuarios") }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-12">
+          <mat-slide-toggle formControlName="estado" color="primary">
+            Empresa activa
+          </mat-slide-toggle>
+        </div>
+      </div>
+
+      <mat-divider class="m-y-24"></mat-divider>
+
+      <!-- Botones -->
+      <div class="d-flex justify-content-end gap-8">
+        <button mat-stroked-button type="button" (click)="cancel()">
+          Cancelar
+        </button>
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="isSubmitting || isLoading"
+        >
+          @if (isSubmitting) {
+            <mat-spinner diameter="20" class="m-r-8"></mat-spinner>
+          } @else {
+            <i-tabler
+              [name]="isEditMode ? 'edit' : 'save'"
+              class="icon-18 m-r-4"
+            ></i-tabler>
+          }
+          {{ isEditMode ? "Actualizar" : "Guardar" }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

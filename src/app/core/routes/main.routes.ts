@@ -136,6 +136,60 @@ export const MainRoutes: Routes = [
       title: 'Dashboard Cotizador',
     },
   },
+  // {
+  //   path: 'empresas',
+  //   canActivate: [AuthGuard],
+  //   children: [
+  //     {
+  //       path: '',
+  //       loadComponent: () =>
+  //         import('../../business/empresas/lista-empresas/lista-empresas.component').then(
+  //           (m) => m.ListaEmpresasComponent,
+  //         ),
+  //       data: { title: 'Empresas' },
+  //     },
+  //     // Puedes agregar más rutas para crear/editar/ver empresas
+  //   ],
+  // },
+
+  {
+    path: 'empresas',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('../../business/empresas/lista-empresas/lista-empresas.component').then(
+            (m) => m.ListaEmpresasComponent,
+          ),
+        data: { title: 'Empresas' },
+      },
+      {
+        path: 'nuevo',
+        loadComponent: () =>
+          import('../../business/empresas/nueva-empresa/nueva-empresa.component').then(
+            (m) => m.NuevaEmpresaComponent,
+          ),
+        data: { title: 'Nueva Empresa' },
+      },
+      {
+        path: 'editar/:id',
+        loadComponent: () =>
+          import('../../business/empresas/nueva-empresa/nueva-empresa.component').then(
+            (m) => m.NuevaEmpresaComponent,
+          ),
+        data: { title: 'Editar Empresa' },
+      },
+      {
+        path: 'ver/:id',
+        loadComponent: () =>
+          import('../../business/empresas/nueva-empresa/nueva-empresa.component').then(
+            (m) => m.NuevaEmpresaComponent,
+          ),
+        data: { title: 'Ver Empresa' },
+      },
+    ],
+  },
   {
     path: 'usuarios',
     canActivate: [AuthGuard],
@@ -143,7 +197,7 @@ export const MainRoutes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../../business/usuarios/lista-usuarios/lista-usuarios.component').then(
+          import('../../business/usuarios/user/lista-usuarios/lista-usuarios.component').then(
             (m) => m.ListaUsuariosComponent,
           ),
         data: { title: 'Usuarios' },
@@ -151,7 +205,7 @@ export const MainRoutes: Routes = [
       {
         path: 'nuevo',
         loadComponent: () =>
-          import('../../business/usuarios/nuevo-usuario/nuevo-usuario.component').then(
+          import('../../business/usuarios/user/nuevo-usuario/nuevo-usuario.component').then(
             (m) => m.NuevoUsuarioComponent,
           ),
         data: { title: 'Nuevo Usuario' },
@@ -159,8 +213,38 @@ export const MainRoutes: Routes = [
       {
         path: 'editar/:id',
         loadComponent: () =>
-          import('../../business/usuarios/nuevo-usuario/nuevo-usuario.component').then(
+          import('../../business/usuarios/user/nuevo-usuario/nuevo-usuario.component').then(
             (m) => m.NuevoUsuarioComponent,
+          ),
+        data: { title: 'Editar Usuario' },
+      },
+    ],
+  },
+  {
+    path: 'admin-usuarios',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('../../business/usuarios/admin/admin_usuarios/admin-usuarios.component').then(
+            (m) => m.AdminUsuariosComponent,
+          ),
+        data: { title: 'Usuarios' },
+      },
+      {
+        path: 'admin-nuevo',
+        loadComponent: () =>
+          import('../../business/usuarios/admin/admin_nuevo_usuario/admin-nuevo-usuario.component').then(
+            (m) => m.AdminNuevoUsuarioComponent,
+          ),
+        data: { title: 'Nuevo Usuario' },
+      },
+      {
+        path: 'admin-editar/:id',
+        loadComponent: () =>
+          import('../../business/usuarios/admin/admin_nuevo_usuario/admin-nuevo-usuario.component').then(
+            (m) => m.AdminNuevoUsuarioComponent,
           ),
         data: { title: 'Editar Usuario' },
       },

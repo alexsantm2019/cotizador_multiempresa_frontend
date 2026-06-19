@@ -1,10 +1,11 @@
 export interface UserDataInterface {
-access: string;
+  access: string;
   refresh: string;
- user_id: number;
+  user_id: number;
   username?: string;
   first_name?: string;
   last_name?: string;
   email?: string;
   full_name: string;
+  is_superuser?: boolean;
 }

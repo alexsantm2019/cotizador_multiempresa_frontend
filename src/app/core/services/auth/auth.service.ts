@@ -13,7 +13,6 @@ import { UserDataInterface } from '../../models/UserData.models';
 export class AuthService {
   private server = environment.apiUrl;
   private apiUrl = `${this.server}/api/token/`;
-
   private tokenSubject: BehaviorSubject<string | null>;
   public token: Observable<string | null>;
   private currentUserSubject = new BehaviorSubject<UserDataInterface | null>(

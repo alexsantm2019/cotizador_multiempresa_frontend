@@ -38,6 +38,30 @@ export class UsuariosService {
   }
 
   /**
+   * Obtener TODOS los usuarios (solo para superadministradores)
+   * Este método no filtra por empresa, devuelve todos los usuarios del sistema
+   */
+  getAllUsers(filters?: any): Observable<User[]> {
+    let params = new HttpParams();
+
+    if (filters) {
+      if (filters.search) params = params.set('search', filters.search);
+      if (filters.is_active !== undefined)
+        params = params.set('is_active', filters.is_active);
+      if (filters.is_staff !== undefined)
+        params = params.set('is_staff', filters.is_staff);
+      if (filters.is_superuser !== undefined)
+        params = params.set('is_superuser', filters.is_superuser);
+      if (filters.page) params = params.set('page', filters.page);
+      if (filters.page_size)
+        params = params.set('page_size', filters.page_size);
+    }
+
+    // Endpoint específico para superadministradores
+    return this.http.get<User[]>(`${this.apiUrl}all-users/`, { params });
+  }
+
+  /**
    * Obtener un usuario por ID
    */
   getUsuarioById(id: number): Observable<User> {
@@ -50,6 +74,14 @@ export class UsuariosService {
   createUsuario(user: UserCreate): Observable<User> {
     // ⭐ No es necesario enviar empresa_id, el backend lo asigna automáticamente
     return this.http.post<User>(this.apiUrl, user);
+  }
+
+  /**
+   * Crear un usuario con empresa y rol de administrador
+   * ⭐ NUEVO MÉTODO
+   */
+  crearUsuarioConEmpresa(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}crear-con-empresa/`, userData);
   }
 
   /**

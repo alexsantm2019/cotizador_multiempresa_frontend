@@ -37,6 +37,10 @@ import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import {
+  withPreloading,
+  PreloadAllModules,
+} from '@angular/router';
 
 // code view
 import { provideHighlightOptions } from 'ngx-highlightjs';
@@ -71,6 +75,7 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled',
       }),
       withComponentInputBinding(),
+      withPreloading(PreloadAllModules),
     ),
     // provideHttpClient(
     //   withInterceptors([AuthInterceptor])),

@@ -36,7 +36,7 @@ export class AppBreadcrumbComponent {
       // tslint:disable-next-line - Disables all
       .subscribe((event) => {
         // tslint:disable-next-line - Disables all
-        this.titleService.setTitle(event['title'] + ' - GPS');
+        this.titleService.setTitle(event['title'] + ' - Mi Cotizador');
         this.pageInfo = event;
       });
   }

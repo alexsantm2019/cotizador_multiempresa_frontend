@@ -2,11 +2,12 @@
 
 <mat-card class="cardWithShadow">
   <mat-card-content>
+    <h1>Administrador</h1>
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center m-b-24">
       <div>
         <h4 class="m-0">
-          {{ isEditMode ? "Editar Usuario" : "Crear Usuario" }}
+          {{ isEditMode ? "Editar Usuario" : "Crear Usuario Admin" }}
         </h4>
         <p class="text-muted m-0 f-s-14">
           {{
@@ -154,6 +155,40 @@
           </mat-form-field>
         </div>
 
+        <div class="col-12">
+          <h5 class="m-b-16">Empresa</h5>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Seleccionar Empresa</mat-label>
+            <mat-select formControlName="empresa_id">
+              @if (isLoadingEmpresas()) {
+                <mat-option disabled>
+                  <mat-spinner diameter="20"></mat-spinner>
+                  Cargando empresas...
+                </mat-option>
+              } @else {
+                @for (empresa of empresas(); track empresa.id) {
+                  <mat-option [value]="empresa.id">
+                    {{ empresa.nombre }}
+                  </mat-option>
+                }
+                @if (empresas().length === 0) {
+                  <mat-option disabled>
+                    No hay empresas disponibles
+                  </mat-option>
+                }
+              }
+            </mat-select>
+            <mat-error
+              *ngIf="usuarioForm.get('empresa_id')?.hasError('required')"
+            >
+              Debes seleccionar una empresa
+            </mat-error>
+          </mat-form-field>
+        </div>
+
         <mat-divider class="m-y-16"></mat-divider>
 
         <!-- Permisos (Simplificado) -->
@@ -167,13 +202,20 @@
               Usuario activo
             </mat-slide-toggle>
 
-            <mat-slide-toggle formControlName="is_staff" color="primary">
+            <mat-slide-toggle
+              formControlName="es_admin_empresa"
+              color="primary"
+            >
+              Es administrador Empresa
+            </mat-slide-toggle>
+
+            <!-- <mat-slide-toggle formControlName="is_staff" color="primary">
               Es administrador
             </mat-slide-toggle>
 
             <mat-slide-toggle formControlName="is_superuser" color="primary">
               Super administrador
-            </mat-slide-toggle>
+            </mat-slide-toggle> -->
           </div>
         </div>
 

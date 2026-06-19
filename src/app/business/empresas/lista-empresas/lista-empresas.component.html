@@ -1,0 +1,257 @@
+<!-- src/app/business/empresas/lista-empresas/lista-empresas.component.html -->
+
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <!-- Header -->
+    <div class="header-container">
+      <div class="header-left">
+        <h4 class="m-0">Gestión de Empresas</h4>
+        <span class="total-badge">{{ totalItems }} empresas</span>
+      </div>
+
+      <div class="header-right">
+        <!-- Buscador -->
+        <mat-form-field
+          appearance="outline"
+          class="search-field"
+          subscriptSizing="dynamic"
+        >
+          <mat-label>Buscar empresa</mat-label>
+          <input
+            matInput
+            placeholder="Buscar por nombre, ruc, email..."
+            (input)="onSearch($event)"
+            [value]="searchTerm()"
+          />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <!-- Refresh -->
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="refresh()"
+          [disabled]="isLoading()"
+        >
+          <i-tabler name="refresh" class="icon-18 m-r-4"></i-tabler>
+          Actualizar
+        </button>
+
+        <button mat-flat-button color="primary" (click)="nuevaEmpresa()">
+          <i-tabler name="plus" class="icon-18 m-r-4"></i-tabler>
+          Nueva Empresa
+        </button>
+
+        <!-- Nueva empresa -->
+        @if (esSuperadmin()) {
+          <button mat-flat-button color="primary" (click)="nuevaEmpresa()">
+            <i-tabler name="plus" class="icon-18 m-r-4"></i-tabler>
+            Nueva Empresa
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-responsive">
+      <!-- Loading -->
+      @if (isLoading()) {
+        <div class="loading-container">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p class="mt-16 text-muted">Cargando empresas...</p>
+        </div>
+      }
+
+      <!-- Tabla -->
+      @if (!isLoading()) {
+        <table mat-table [dataSource]="empresas()" class="w-100">
+          <!-- Nombre -->
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600">Empresa</th>
+            <td mat-cell *matCellDef="let empresa">
+              <div class="empresa-info">
+                @if (empresa.logo) {
+                  <img
+                    [src]="empresa.logo | imageUrl"
+                    alt="{{ empresa.nombre }}"
+                    class="empresa-logo"
+                    (error)="onImageError($event)"
+                  />
+                } @else {
+                  <div
+                    class="empresa-avatar"
+                    [style.background-color]="getAvatarColor(empresa.nombre)"
+                  >
+                    {{ empresa.nombre.charAt(0).toUpperCase() }}
+                  </div>
+                }
+                <div class="empresa-details">
+                  <div class="empresa-nombre">{{ empresa.nombre }}</div>
+                  <div class="empresa-created">
+                    Creada: {{ empresa.created_at | date: "dd/MM/yyyy" }}
+                  </div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- RUC -->
+          <ng-container matColumnDef="ruc">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600">RUC</th>
+            <td mat-cell *matCellDef="let empresa">
+              {{ empresa.ruc || "N/A" }}
+            </td>
+          </ng-container>
+
+          <!-- Teléfono -->
+          <ng-container matColumnDef="telefono">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600">Teléfono</th>
+            <td mat-cell *matCellDef="let empresa">
+              {{ empresa.telefono || "N/A" }}
+            </td>
+          </ng-container>
+
+          <!-- Email -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600">Email</th>
+            <td mat-cell *matCellDef="let empresa">
+              <a href="mailto:{{ empresa.email }}" class="email-link">
+                {{ empresa.email || "N/A" }}
+              </a>
+            </td>
+          </ng-container>
+
+          <!-- Plan -->
+          <ng-container matColumnDef="plan">
+            <th mat-header-cell *matHeaderCellDef class="text-center f-w-600">
+              Plan
+            </th>
+            <td mat-cell *matCellDef="let empresa" class="text-center">
+              <span class="plan-badge" [class]="empresa.plan">
+                {{ getPlanText(empresa.plan) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Máx usuarios -->
+          <ng-container matColumnDef="max_usuarios">
+            <th mat-header-cell *matHeaderCellDef class="text-center f-w-600">
+              Máx. Usuarios
+            </th>
+            <td mat-cell *matCellDef="let empresa" class="text-center">
+              {{ empresa.max_usuarios || 5 }}
+            </td>
+          </ng-container>
+
+          <!-- Estado -->
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef class="text-center f-w-600">
+              Estado
+            </th>
+            <td mat-cell *matCellDef="let empresa" class="text-center">
+              <span
+                class="status-badge"
+                [class.active]="empresa.estado"
+                [class.inactive]="!empresa.estado"
+              >
+                <span class="status-dot"></span>
+                {{ empresa.estado ? "Activa" : "Inactiva" }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Acciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef class="text-center f-w-600">
+              Acciones
+            </th>
+            <td mat-cell *matCellDef="let empresa" class="text-center">
+              <div class="actions-container">
+                <!-- Solo superadmin puede gestionar empresas -->
+
+                <!-- <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="verEmpresa(empresa.id)"
+                  matTooltip="Ver detalles"
+                  matTooltipPosition="above"
+                >
+                  <i-tabler name="eye" class="icon-18"></i-tabler>
+                </button> -->
+
+                <button
+                  mat-icon-button
+                  color="accent"
+                  (click)="editarEmpresa(empresa.id)"
+                  matTooltip="Editar empresa"
+                  matTooltipPosition="above"
+                >
+                  <i-tabler name="edit" class="icon-18"></i-tabler>
+                </button>
+
+                <button
+                  mat-icon-button
+                  [color]="empresa.estado ? 'warn' : 'primary'"
+                  (click)="toggleEmpresaStatus(empresa.id, !empresa.estado)"
+                  [matTooltip]="
+                    empresa.estado ? 'Desactivar empresa' : 'Activar empresa'
+                  "
+                  matTooltipPosition="above"
+                >
+                  <i-tabler
+                    [name]="empresa.estado ? 'building-off' : 'building'"
+                    class="icon-18"
+                  ></i-tabler>
+                </button>
+
+                <button
+                  mat-icon-button
+                  color="warn"
+                  (click)="eliminarEmpresa(empresa.id, empresa.nombre)"
+                  matTooltip="Eliminar empresa"
+                  matTooltipPosition="above"
+                >
+                  <i-tabler name="trash" class="icon-18"></i-tabler>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Header Row -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+          <!-- Data Rows -->
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <!-- Empty state -->
+        @if (empresas().length === 0) {
+          <div class="empty-state">
+            <i-tabler name="buildings" class="empty-icon"></i-tabler>
+            <h5>No se encontraron empresas</h5>
+            <p class="text-muted">Intenta con otro término de búsqueda</p>
+            @if (esSuperadmin()) {
+              <button mat-flat-button color="primary" (click)="nuevaEmpresa()">
+                <i-tabler name="plus" class="icon-18 m-r-4"></i-tabler>
+                Crear Empresa
+              </button>
+            }
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Paginador -->
+    @if (!isLoading() && empresas().length > 0) {
+      <mat-paginator
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageIndex]="currentPage - 1"
+        [pageSizeOptions]="[5, 10, 20, 50]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    }
+  </mat-card-content>
+</mat-card>

@@ -10,8 +10,26 @@ export const NavMenuItems: NavItem[] = [
   //   ddType: '1',
   // },
   {
+    displayName: 'Administrador',
+    iconName: 'shield',
+    route: '',
+    ddType: '1',
+    children: [
+      {
+        displayName: 'Empresas',
+        iconName: 'chevron-right',
+        route: '/business/empresas',
+      },
+      {
+        displayName: 'Usuarios',
+        iconName: 'chevron-right',
+        route: '/business/admin-usuarios',
+      },
+    ],
+  },
+  {
     displayName: 'Usuarios',
-    iconName: 'layout-dashboard',
+    iconName: 'users',
     bgcolor: 'primary',
     route: '/business/usuarios',
     ddType: '1',
@@ -59,51 +77,14 @@ export const NavMenuItems: NavItem[] = [
     children: [
       {
         displayName: 'Catálogos',
-        iconName: 'point',
+        iconName: 'chevron-right',
         route: '/business/catalogos',
       },
       {
         displayName: 'Categorías de productos',
-        iconName: 'point',
+        iconName: 'chevron-right',
         route: '/business/categoria-productos',
       },
     ],
   },
-  // {
-  //   displayName: 'Productos',
-  //   iconName: 'point',
-  //   route: '',
-  //   ddType: '1',
-  //   children: [
-  //     {
-  //       displayName: 'Lista de productos',
-  //       iconName: 'point',
-  //       route: '/business/productos',
-  //     },
-  //     {
-  //       displayName: 'Categorías',
-  //       iconName: 'point',
-  //       route: '/business/categoria-productos',
-  //     },
-  //   ],
-  // },
-  // {
-  //   displayName: 'Paquetes',
-  //   iconName: 'layout-dashboard',
-  //   bgcolor: 'primary',
-  //   route: '',
-  //   ddType: '1',
-  //   children: [
-  //     {
-  //       displayName: 'Lista de paquetes',
-  //       iconName: 'point',
-  //       route: '/business/paquetes',
-  //     },
-  //     {
-  //       displayName: 'Nuevo paquete',
-  //       iconName: 'point',
-  //       route: '/business/nuevo-paquete',
-  //     },
-  //   ],
-  // },
 ];

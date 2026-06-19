@@ -17,12 +17,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ToastrService } from 'ngx-toastr';
 import { TablerIconsModule } from 'angular-tabler-icons';
-import { UsuariosService } from '../../../core/services/usuarios/usuarios.service';
-import { User } from '../../../core/models/user.models';
-import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
+import { UsuariosService } from '../../../../core/services/usuarios/usuarios.service';
+import { User } from '../../../../core/models/user.models';
+import { ConfirmDialogComponent } from '../../../../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
-  selector: 'app-lista-usuarios',
+  selector: 'app-admin-usuarios',
   standalone: true,
   imports: [
     CommonModule,
@@ -41,10 +41,10 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
     MatInputModule,
     TablerIconsModule,
   ],
-  templateUrl: './lista-usuarios.component.html',
-  styleUrls: ['./lista-usuarios.component.scss'],
+  templateUrl: './admin-usuarios.component.html',
+  styleUrls: ['./admin-usuarios.component.scss'],
 })
-export class ListaUsuariosComponent implements OnInit {
+export class AdminUsuariosComponent implements OnInit {
   private usuarioService = inject(UsuariosService);
   private toastr = inject(ToastrService);
   private dialog = inject(MatDialog);
@@ -67,7 +67,8 @@ export class ListaUsuariosComponent implements OnInit {
     'email',
     'empresa',
     'estado',
-    'rol',
+    // 'rol',
+    'es_admin_empresa',
     'acciones',
   ];
 
@@ -82,7 +83,7 @@ export class ListaUsuariosComponent implements OnInit {
     this.isLoading.set(true);
 
     this.usuarioService
-      .getUsuarios({
+      .getAllUsers({
         search: this.searchTerm() || undefined,
         page: this.currentPage,
         page_size: this.pageSize,
@@ -127,14 +128,14 @@ export class ListaUsuariosComponent implements OnInit {
    * Crear nuevo usuario
    */
   nuevoUsuario(): void {
-    this.router.navigate(['/business/usuarios/nuevo']);
+    this.router.navigate(['/business/admin-usuarios/admin-nuevo']);
   }
 
   /**
    * Editar usuario
    */
   editarUsuario(id: number): void {
-    this.router.navigate(['/business/usuarios/editar', id]);
+    this.router.navigate(['/business/admin-usuarios/admin-editar', id]);
   }
 
   /**

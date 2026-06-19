@@ -14,6 +14,7 @@ export interface User {
   date_joined?: string;
   empresa_id?: number;
   empresa_nombre?: string;
+  es_admin_empresa?: boolean;
 }
 
 export interface UserCreate {
@@ -26,6 +27,7 @@ export interface UserCreate {
   is_staff?: boolean;
   is_superuser?: boolean;
   empresa_id?: number;
+  es_admin_empresa?: boolean;
 }
 
 export interface UserUpdate {
@@ -38,4 +40,5 @@ export interface UserUpdate {
   is_superuser?: boolean;
   empresa_id?: number;
   password?: string;
+  es_admin_empresa?: boolean;
 }
